@@ -167,5 +167,44 @@ def admin_logout():
     flash('You have been logged out.')
     return redirect(url_for('admin_login'))
 
+# Teacher Login Route
+@app.route('/teacher_login', methods=['POST'])
+def teacher_login():
+    data = request.json  # Expecting JSON data
+    staff_id = data.get('staff_id')
+    pin_no = data.get('pin_no')
+
+    # Query the Teacher table to authenticate
+    teacher = Teacher.query.filter_by(staff_id=staff_id).first()
+
+    if teacher and teacher.pin_no == pin_no:  # If using hashed pin_no, replace this with hash check
+        login_user(teacher)  # Log the teacher in and create a session
+        return jsonify({"message": f"Welcome {teacher.staff_id}!", "success": True}), 200
+    else:
+        return jsonify({"message": "Invalid staff ID or PIN number. Please try again.", "success": False}), 401
+
+# Student Login Route
+@app.route('/student_login', methods=['POST'])
+def student_login():
+    data = request.json  # Expecting JSON data
+    admission_no = data.get('admission_no')
+    pin_no = data.get('pin_no')
+
+    # Query the Student table to authenticate
+    student = Student.query.filter_by(admission_no=admission_no).first()
+
+    if student and student.pin_no == pin_no:  # If using hashed pin_no, replace this with hash check
+        login_user(student)  # Log the student in and create a session
+        return jsonify({"message": f"Welcome {student.name}!", "success": True}), 200
+    else:
+        return jsonify({"message": "Invalid admission number or PIN number. Please try again.", "success": False}), 401
+
+# Logout Route (for Teachers and Students)
+@app.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    logout_user()  # Logs the user out and clears the session
+    return jsonify({"message": "You have been logged out.", "success": True}), 200
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
