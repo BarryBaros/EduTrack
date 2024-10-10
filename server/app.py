@@ -1,11 +1,19 @@
-from flask import Flask, make_response, jsonify, request
+from flask import Flask, make_response, jsonify, request, redirect, url_for, render_template, flash, session
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from models import db, Admin, Teacher, Student, Subject, Class, StudentSubject
 from datetime import datetime
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -126,6 +134,38 @@ def create_class():
     db.session.commit()
     return jsonify({'message': 'Class created successfully'}), 201
 
+# Admin Login Route
+@app.route('/admin_login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        staff_id = request.form['staff_id']
+        pin_no = request.form['pin_no']
+
+        # Query the Admin table to authenticate
+        admin = Admin.query.filter_by(staff_id=staff_id).first()
+
+        if admin and admin.pin_no == pin_no:  # If you use hashed pin_no, replace this with hash check
+            login_user(admin)  # Log the admin in and create a session
+            flash(f'Welcome {admin.staff_id}! You are logged in.')
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash('Invalid staff ID or PIN number. Please try again.')
+
+            return render_template('admin_login.html')
+
+# Admin Dashboard Route
+@app.route('/admin_dashboard')
+@login_required
+def admin_dashboard():
+    return f'Welcome to the admin dashboard, {current_user.staff_id}!'
+
+# Admin Logout Route
+@app.route('/admin_logout')
+@login_required
+def admin_logout():
+    logout_user()  # Logs the admin out and clears the session
+    flash('You have been logged out.')
+    return redirect(url_for('admin_login'))
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
