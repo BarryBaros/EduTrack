@@ -2,7 +2,7 @@ from flask import Flask, make_response, jsonify, request, redirect, url_for, ren
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
-from models import db, Admin, Teacher, Student, Subject, Class, StudentSubject
+from .models import db, Admin, Teacher, Student, Subject, Class
 from datetime import datetime
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
