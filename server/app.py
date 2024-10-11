@@ -1,25 +1,27 @@
 from flask import Flask, make_response, jsonify, request, redirect, url_for, render_template, flash, session
 from flask_migrate import Migrate
 from flask_cors import CORS
-from flask_bcrypt import Bcrypt
 from .models import db, Admin, Teacher, Student, Subject, Class
 from datetime import datetime
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
-
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = 'your_secret_key'  # Make sure to change this to a secure key in production
 
-
+# Initialize Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+# User loader function for Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    # Load user from the database
+    return Admin.query.get(int(user_id))  # Adjust this based on the model you want to load
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
-bcrypt = Bcrypt(app)
 CORS(app)
 
 migrate = Migrate(app, db)
@@ -31,7 +33,8 @@ def get_teachers():
     teachers = Teacher.query.all()
     return jsonify([teacher.name for teacher in teachers])
 
-# Create a new teacher@app.route('/teachers', methods=['POST'])
+# Create a new teacher
+@app.route('/teachers', methods=['POST'])
 def create_teacher():
     data = request.get_json()
     new_teacher = Teacher(
@@ -48,6 +51,11 @@ def create_teacher():
 def get_students():
     students = Student.query.all()
     return jsonify([student.name for student in students])
+
+@app.route('/admins', methods=['GET'])
+def get_admins():
+    admins = Admin.query.all()
+    return jsonify([admin.name for admin in admins])
 
 # Get a single student by ID
 @app.route('/students/<int:id>', methods=['GET'])
@@ -98,7 +106,7 @@ def delete_student(id):
     student = Student.query.get_or_404(id)
     db.session.delete(student)
     db.session.commit()
-    return jsonify({'message': 'Student deleted successfully'})
+    return jsonify({'message': 'Student deleted successfully'})
 
 # Get all subjects
 @app.route('/subjects', methods=['GET'])
@@ -144,14 +152,14 @@ def admin_login():
         # Query the Admin table to authenticate
         admin = Admin.query.filter_by(staff_id=staff_id).first()
 
-        if admin and admin.pin_no == pin_no:  # If you use hashed pin_no, replace this with hash check
+        if admin and admin.pin_no == pin_no:  # Check the PIN without hashing
             login_user(admin)  # Log the admin in and create a session
             flash(f'Welcome {admin.staff_id}! You are logged in.')
             return redirect(url_for('admin_dashboard'))
         else:
             flash('Invalid staff ID or PIN number. Please try again.')
 
-            return render_template('admin_login.html')
+    return render_template('admin_login.html')
 
 # Admin Dashboard Route
 @app.route('/admin_dashboard')
@@ -177,7 +185,7 @@ def teacher_login():
     # Query the Teacher table to authenticate
     teacher = Teacher.query.filter_by(staff_id=staff_id).first()
 
-    if teacher and teacher.pin_no == pin_no:  # If using hashed pin_no, replace this with hash check
+    if teacher and teacher.pin_no == pin_no:  # Check the PIN without hashing
         login_user(teacher)  # Log the teacher in and create a session
         return jsonify({"message": f"Welcome {teacher.staff_id}!", "success": True}), 200
     else:
@@ -193,7 +201,7 @@ def student_login():
     # Query the Student table to authenticate
     student = Student.query.filter_by(admission_no=admission_no).first()
 
-    if student and student.pin_no == pin_no:  # If using hashed pin_no, replace this with hash check
+    if student and student.pin_no == pin_no:  # Check the PIN without hashing
         login_user(student)  # Log the student in and create a session
         return jsonify({"message": f"Welcome {student.name}!", "success": True}), 200
     else:
