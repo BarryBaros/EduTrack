@@ -6,7 +6,7 @@ from datetime import datetime
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Make sure to change this to a secure key in production
+app.secret_key = 'SECRET_KEY' 
 
 # Initialize Flask-Login
 login_manager = LoginManager()
@@ -26,6 +26,10 @@ CORS(app)
 
 migrate = Migrate(app, db)
 db.init_app(app)
+
+@app.route('/')
+def index():
+    return 'Hi, welcome to the EduTrack!'
 
 # Get all teachers
 @app.route('/teachers', methods=['GET'])
@@ -52,10 +56,11 @@ def get_students():
     students = Student.query.all()
     return jsonify([student.name for student in students])
 
+# Get all admins
 @app.route('/admins', methods=['GET'])
 def get_admins():
     admins = Admin.query.all()
-    return jsonify([admin.name for admin in admins])
+    return jsonify([{'staff_id': admin.staff_id, 'admin_name': admin.admin_name} for admin in admins])
 
 # Get a single student by ID
 @app.route('/students/<int:id>', methods=['GET'])
