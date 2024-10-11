@@ -11,6 +11,8 @@ flask-migrate = "*"
 flask-login = "*"
 flask-bcrypt = "*"
 sqlalchemy-serializer = "*"
+python-dotenv = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 

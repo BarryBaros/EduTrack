@@ -4,9 +4,16 @@ from flask_cors import CORS
 from .models import db, Admin, Teacher, Student, Subject, Class
 from datetime import datetime
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'SECRET_KEY' 
+
+# Load the secret key from the environment variable
+app.secret_key = os.getenv('SECRET_KEY', 'default_secret_key')
 
 # Initialize Flask-Login
 login_manager = LoginManager()
