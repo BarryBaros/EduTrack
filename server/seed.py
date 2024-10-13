@@ -1,5 +1,5 @@
-from server.app import db, app
-from server.models import Admin, Teacher, Student, Subject, Class
+from app import db, app
+from models import Admin, Teacher, Student, Subject, Class
 
 # Create the database and the tables (if they don't exist yet)
 with app.app_context():
