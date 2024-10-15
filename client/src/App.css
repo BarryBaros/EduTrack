@@ -1,5 +1,7 @@
 .app{
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family: 'Inria Serif', serif;
+  font-weight: 200;
   margin: 0;
   padding: 0;
   display: flex;
@@ -7,7 +9,7 @@
 
 .sidebar{
   width: 60px;
-  background-color: #3d3d3d;
+  background-color: #4a4a4a;
   height: 100vh;
   position: fixed;
   top: 0;
@@ -58,7 +60,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #fff;
+  background-color: #ffffff99;
   color: #333;
   margin-top: 10px;
 
@@ -66,7 +68,7 @@
 
 .header .logo{
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 500;
 
 }
 
@@ -81,45 +83,79 @@
 .hero{
   text-align: center;
   padding: 30px;
-  background-color: #f9f9f9;
-  height: 70vh;
+  background-color: #ffffffa8;
+  height: 75vh;
   margin-top: 50px;
   margin-bottom: 20px;
 }
 
 .hero h1{
-  font-size: 3.5rem;
+  font-size: 3.7rem;
   margin-bottom: 20px;
 
 }
 
 .hero p{
-  font-size: 1.8rem;
-  color: #555;
+  font-size: 2rem;
+  color: #313131;
 }
 
 .goals{
-  padding: 40px;
-  background-color: #fff;
+  padding: 30px;
+  background-color: #4a4a4a;
   margin-top: 80px;
+  font-family: 'Inria Serif', serif;
+  
 }
 
 .goals h2{
   font-size: 2rem;
   margin-bottom: 20px;
+  text-align: center;
+  color: #f1f1f1;
+  font-size: 3.1 rem;
 }
 .goals ul{
   list-style: none;
   padding: 0;
+  
 }
 .goals ul li{
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   color: #333;
   margin-bottom: 10px;
+  color: #f1f1f1;
+  text-align: center;
 }
 .join{
   padding: 40px;
   background-color: #f1f1f1;
+}
+.join-content{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+  flex-direction: row;
+}
+.join-text{
+  flex: 1;
+  max-width: 60%;
+  padding-right: 20px; /* Right padding for spacing */
+  order: 1;
+}
+
+.join-text p{
+  font-size: 1.2 rem;
+  color: #333;
+  
+}
+
+.join-text h2{
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: left;
 }
 
 .join h2{
@@ -132,9 +168,23 @@
   margin-bottom: 20px;
 }
 .contact-form{
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  text-align: center;
+  height: 250px;
+  margin-left: auto; /* Align form to the right */
+  flex-shrink: 0;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border: 1px solid #ddd;
+  max-width: 35%;
+  border-radius: 0.5rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  order: 2;
+}
+
+.contact-form h3{
+  font-size: 1.2 rem;
+  margin-bottom: 10px;
+  
 }
 
 .contact-form input,
@@ -142,18 +192,31 @@
   padding: 10px;
   font-size: 1rem;
   width: 100%;
+  margin-bottom: 10px;
   max-width: 400px;
+  border-radius: 0.3rem;
+  max-height: fit-content;
 }
 
 .contact-form button{
   padding: 10px 20px;
-  background-color: #333;
+  background-color: #3333339a;
   color: #fff;
   border: none;
   cursor: pointer;
+  width: 50%;
+  margin-top: 10px;
+  margin-left: 10%;
+  border-radius: 0.3rem;
+}
+
+.contact-form button:hover{
+  background-color: #c9c9c9;
+  color: #313131;
+
 }
 footer{
-  background-color: #7979799d;
+  background-color: #4a4a4a;
   color: #fff;
   padding: 40px 20px;
 }
@@ -165,6 +228,10 @@ footer{
 
 .footer-top .contact-info{
   max-width: 50%;
+}
+
+.footer-top .contact-info p a{
+  color: #f9f9f9;
 }
 
 .footer-top .contact-info h3,
@@ -182,17 +249,27 @@ footer{
   gap: 10px;
 }
 .footer-top .newsletter-form input{
-  padding: 10px;
+  padding: 8px;
   font-size: 1rem;
+  border-radius: 0.3rem;
 }
 
 .footer-top .newsletter-form button{
-  padding: 10px 20px;
-  background-color: #fff;
-  color: #333;
+  padding: 8px 10px;
+  background-color: #b0b0b0;
+  color: #ffffff;
   border: none;
   cursor: pointer;
+  border-radius: 0.3rem;
+  
 }
+
+
+.footer-top .newsletter-form button:hover{
+  background-color: #fff;
+  color: #313131;
+}
+
 
 .footer-bottom{
   text-align: center;

@@ -35,24 +35,33 @@ function Homepage(){
                     <section className='goals'>
                         <h2>Our Goals</h2>
                         <ul>
-                            <li>Facilitate seamless interaction between students, teachers and parents, ensuring everyone stays informedand engagedin the learning process.</li>
-                            <li>Provide a clear and accessible way for studentsto monitor their progress, set goals and celebrate achievemnets, while enabling teachers and parents to offer timely support.</li>
-                            <li>Implement an easy-to-use attendance tracking system that helps students, teachers and parents stay aware of attendance patterns and address any concerns early.</li>
+                            <li>Facilitate seamless interaction between students, teachers and parents, ensuring <br /> everyone stays informedand engagedin the learning process.<br /></li>
+                            <br />
+                            <li>Provide a clear and accessible way for students to monitor their progress, set goals<br /> and celebrate achievemnets, while enabling teachers and parents to offer timely support.<br /></li>
+                            <br />
+                            <li>Implement an easy-to-use attendance tracking system that helps students, <br />teachers and parents stay aware of attendance patterns and address any concerns <br />early.</li>
 
                         </ul>
                     </section>
 
                     <section className='join'>
-                        <h2>Join Us Now</h2>
-                        <p>
-                            Join us at EduTrack and become part of a vibrant learning community!
-                            Whether you're a student eager to excel, a teacher dedicated to inspiring, or a parent invested in your child's success
-                        </p>
+                        <div className='join-context'>
+                            <div className='join-text'>
+                                <h2>Join Us Now</h2>
+                                <p>
+                                    Join us at EduTrack and become part of a vibrant <br/> learning community!<br />
+                                   
+                                    Whether you're a student eager to excel, a teacher dedicated to inspiring, or a parent<br/> invested in your child's success.<br/>
+                                </p>
+
+                           </div>
                         <form className='contact-form'>
+                            <h3>Get In Touch</h3>
                             <input type='email' placeholder='Email'/>
                             <textarea placeholder='Tell us why you want to join...'/>
                             <button type='submit'>Join Now</button>
                         </form>
+                        </div>
                     </section>
                 </main>
 
