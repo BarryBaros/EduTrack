@@ -73,17 +73,42 @@
   align-items: center;
 
 }
+
+.header .logo:hover{
+  color: #1a9516;
+  cursor: pointer;
+}
+
 .header .logo img {
   margin-right: 10px; 
   height: 40px; 
 }
 
-.header nav .logout-button{
-  background-color: none;
+.header nav {
+  display: flex;
+  align-items: center; /* Vertically align the image and the button */
+}
+
+.header nav img {
+  margin-right: 10px; /* Add space between the image and the button */
+  height: 30px; /* Adjust the height of the image */
+}
+
+
+
+.header nav .logout-btn {
+  background-color: none; /* You can customize the button style further */
   border: none;
-  color: #fff;
+  color: #333;
+  padding: 10px 20px;
   font-size: 1rem;
   cursor: pointer;
+  border-radius: 5px;
+}
+
+.header nav .logout-btn:hover {
+  background-color: #555;
+   color: #fff;
 }
 
 .hero{

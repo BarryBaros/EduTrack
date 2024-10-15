@@ -22,7 +22,8 @@ function Homepage(){
                             
                             </div>
                         <nav>
-                            <button className='logout-btn'>Log Out</button>
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAYZJREFUaEPtmU1KBDEQRt8cQURREc/g0nO4deFCwYU3UhEXHkXBnRtv4B8iegA3OgXd0gSnU2aqnEQqm1lMUvlevqpOujOh8TZpXD8BsGgHw4H/5sAacAbsAMtGcG/ANXAIvKYxLVNIxN8C8uvR7oFt4H0Y3BLgEtjzUD6IeQIceQE8AevOAOLClhfAZyLeyt3RuFaTiPYAmJF+4YC2LiOFak+h0+lOegx8aC3t+lVTAyLkBtidbkbPv4D4M4Ccpl6IiBcIgdG06gBEtKSRpJMc/HKtSoBetADk6qJqAAHJ1cXcAGmAnOUl/4/VRRMAY3URAM2nUElO/zRm1kK4F7EnQLOP0aY3smqPErn3geoPczmA5o/TpQ+DuTcy7cQ5B7Rx0n4BoF25cKD2l3qtkwurgUdgo1SlcpzMsTnsa/lt9ALYVwop7XYOHHgBrAB3wGqpusy4h+6CQ25svpulAxJUUqi/YloyAhHBV93Fxksa0xrASLM+TADo18qnZzjgs676qM078AVMS3AxBwogdgAAAABJRU5ErkJggg=="/>
+                            <button className='logout-btn'>Log In</button>
                         </nav>
                     </header>
                 
