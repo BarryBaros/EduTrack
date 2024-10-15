@@ -16,7 +16,11 @@ function Homepage(){
 
                 <div className='main-content'>
                     <header className='header'>
-                        <div className='logo'>EduTrack</div>
+                        <div className='logo'>
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAApVJREFUaEPtmM/LTUEYxz9vUoTy842wEaUsFEmspBQ7kliQhQ1J+QfkTyArFpYivBspG5KSRIkFiY2FnxsssBPzrbk1bnPOeebM3Hu6OlOnexczz/P9zPOdOc+9U0z4mJpw/fQAXVewr0Bfgcwd6C00tIEbgX3AXmAucC94vmdudnR5iQqEovW9ajz0MHcBfS8y2gJYRVeJVDXC6rxpS5MCkCu6TqMAWtmtCWCUouuAzHaLAXQlupXdYgB/2vpxTOv+0fxfAmwGDgKHgNVj2lVLmqvAJeBBOLnpEO/xMAKaY8lSeM5P4KIX/jYWuwlgsEbiBaFHUKMeEqvdlnhBVA4rQBhAtpK9BCO7lRyyh4TLLqbRBiAMXOq8RP1tIcgFCHOknpdGf5cCeAncAK4567w2BG06LxZ/z/Jd7Sn/+bUqr6UC4YvtVSJMeF5+GPy9GDgOnABWedFLgGIAsSt4uUv62VCZuimbgNPAkcgkQX0rVYEYwG/gETAD3ATeG2FmA/sB2WR7zZqRV2C4d3riYa4D7yLCpr1NZJUVBtixA4SangeVWQicBA4bRIdTFjl7Vf4cTT3EMQuNunvttAKJmx2dng3wy//DMBz9gutWL7t7+kUJlTUx5tf1QxYL3QF2j1hkVXhdCFvrclsA1rr/eXQY53UAsRO4nwug9XrR3AJWjhHigH+v1Ka0VGAQYClwrsU1mMqstuEocNuyMAVgEE9lPQPssCRInKOL4WzdvT8crw3AIMYa4BiwC9iSKDSc/gm4ApwHPqTGyQEIcy0AtrlOdYNru9c7QeuAZYAaMT1qsXUdfwE+Amqpn7nb7THwNFV07G2aE6PTtaUq0BlED9DZ1vvEfQX6CmTuQG+hzA3MXj7xFfgLbDF9MUpyEbkAAAAASUVORK5CYII="/>
+                            EduTrack
+                            
+                            </div>
                         <nav>
                             <button className='logout-btn'>Log Out</button>
                         </nav>

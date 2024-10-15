@@ -69,7 +69,13 @@
 .header .logo{
   font-size: 1.5rem;
   font-weight: 500;
+  display: flex;
+  align-items: center;
 
+}
+.header .logo img {
+  margin-right: 10px; 
+  height: 40px; 
 }
 
 .header nav .logout-button{
@@ -130,20 +136,22 @@
 .join{
   padding: 40px;
   background-color: #f1f1f1;
+  
 }
-.join-content{
+.join-content {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
+  justify-content: space-between; /* Ensures space between the form and text */
+  align-items: flex-start; /* Align them horizontally, starting from the top */
+  flex-wrap: nowrap; /* Prevents wrapping so they stay in one line */
   width: 100%;
-  flex-direction: row;
 }
-.join-text{
+.join-text {
   flex: 1;
-  max-width: 60%;
-  padding-right: 20px; /* Right padding for spacing */
-  order: 1;
+  padding-right: 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .join-text p{
@@ -155,7 +163,7 @@
 .join-text h2{
   font-size: 2rem;
   margin-bottom: 20px;
-  text-align: left;
+ 
 }
 
 .join h2{
@@ -167,18 +175,13 @@
   color: #333;
   margin-bottom: 20px;
 }
-.contact-form{
-  text-align: center;
-  height: 250px;
-  margin-left: auto; /* Align form to the right */
-  flex-shrink: 0;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border: 1px solid #ddd;
-  max-width: 35%;
-  border-radius: 0.5rem;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  order: 2;
+.contact-form {
+  flex: 1;
+  max-width: 35%; /* Ensures the form doesn’t take too much space */
+  margin-left: 20px; /* Adds space between text and form */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Aligns form items at the top */
 }
 
 .contact-form h3{
