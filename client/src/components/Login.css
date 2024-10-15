@@ -1,0 +1,53 @@
+*{
+    color:white;
+    font-family:
+}
+
+.login-container{
+    box-sizing: border-box;
+    width:400px;
+    margin:100px auto;
+    background-color:#05192d;
+    padding:10px;
+    border-radius: 20px;
+    text-align-last: center;  
+}
+
+ .label {
+    display: block;
+    text-align: left;
+    width: 100%;
+    color: black;
+  } 
+  
+  .input-container {
+    width: 100%;
+  }
+  
+  input {
+    width: 100%;
+    color:black; 
+    padding: 8px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    border: 2px solid #06bdfc;
+    box-sizing: border-box;
+    background-color: #dbd7d7;
+  }
+  input::placeholder {
+    color: black; 
+    opacity: 1; 
+}
+
+  button{
+    margin-bottom: 20px;
+    width:30%;
+    border-radius: 20px;
+    padding: 10px;
+    border: none;
+    outline:none;
+    color:#05192d;
+    font-weight:400;
+    font-size:16px;
+    background-color: #03ef62;
+  }
