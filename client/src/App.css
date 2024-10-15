@@ -1,38 +1,204 @@
-.App {
-  text-align: center;
+.app{
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.sidebar{
+  width: 60px;
+  background-color: #3d3d3d;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  padding-top: 20px;
 }
 
-.App-link {
-  color: #61dafb;
+.sidebar ul{
+  list-style: none;
+  padding: 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.sidebar ul li{
+  margin: 20px 0;
+}
+
+.sidebar ul li a{
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.5rem;
+}
+
+.social-icon.linkedin::before{
+  content: 'in';
+  font-size: 1.2rem;
+}
+
+.social-icon.instagram::before{
+  content: 10;
+  font-size: 1.2rem;
+}
+.social-icon.youtube::before{
+  content: 'YT';
+  font-size: 1.2rem;
+}
+
+.main-content{
+  margin-left: 60px;
+  width: 100%;
+  
+}
+
+.header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #fff;
+  color: #333;
+  margin-top: 10px;
+
+}
+
+.header .logo{
+  font-size: 1.5rem;
+  font-weight: bold;
+
+}
+
+.header nav .logout-button{
+  background-color: none;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.hero{
+  text-align: center;
+  padding: 30px;
+  background-color: #f9f9f9;
+  height: 70vh;
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+.hero h1{
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+
+}
+
+.hero p{
+  font-size: 1.8rem;
+  color: #555;
+}
+
+.goals{
+  padding: 40px;
+  background-color: #fff;
+  margin-top: 80px;
+}
+
+.goals h2{
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+.goals ul{
+  list-style: none;
+  padding: 0;
+}
+.goals ul li{
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+.join{
+  padding: 40px;
+  background-color: #f1f1f1;
+}
+
+.join h2{
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+.join p{
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+.contact-form{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contact-form input,
+.contact-form textarea{
+  padding: 10px;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.contact-form button{
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+footer{
+  background-color: #7979799d;
+  color: #fff;
+  padding: 40px 20px;
+}
+.footer-top{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-top .contact-info{
+  max-width: 50%;
+}
+
+.footer-top .contact-info h3,
+.footer-top .newsletter h3{
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.footer-top .newsletter{
+  max-width: 50%;
+}
+
+.footer-top .newsletter-form{
+  display: flex;
+  gap: 10px;
+}
+.footer-top .newsletter-form input{
+  padding: 10px;
+  font-size: 1rem;
+}
+
+.footer-top .newsletter-form button{
+  padding: 10px 20px;
+  background-color: #fff;
+  color: #333;
+  border: none;
+  cursor: pointer;
+}
+
+.footer-bottom{
+  text-align: center;
+  margin-top: 20px;
+}
+
+.footer-bottom p{
+  font-size: 1rem;
 }
