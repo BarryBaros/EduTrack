@@ -32,20 +32,19 @@
 .sidebar ul li a{
   color: #fff;
   text-decoration: none;
-  font-size: 1.5rem;
+  font-size: 0.5rem;
 }
 
-.social-icon.linkedin::before{
-  content: 'in';
-  font-size: 1.2rem;
+.social-icon.linkedin img::before{
+  font-size: 0.5rem;
+  
 }
 
 .social-icon.instagram::before{
-  content: 10;
-  font-size: 1.2rem;
+  font-size: 0.5rem;
 }
 .social-icon.youtube::before{
-  content: 'YT';
+
   font-size: 1.2rem;
 }
 
