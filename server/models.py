@@ -23,6 +23,7 @@ class Admin(db.Model, SerializerMixin):
             'pin_no': self.pin_no
         }
 
+
 # Teacher Model
 class Teacher(db.Model, SerializerMixin):
     __tablename__ = 'teachers'
@@ -40,6 +41,7 @@ class Teacher(db.Model, SerializerMixin):
             'name': self.name
         }
 
+
 # Class Model
 class Class(db.Model, SerializerMixin):
     __tablename__ = 'classes'
@@ -52,9 +54,6 @@ class Class(db.Model, SerializerMixin):
     # Relationship to Teacher
     teacher = db.relationship('Teacher', backref='classes', lazy=True)
 
-    # Relationship to Students
-    students = db.relationship('Student', backref='classroom', lazy=True)
-
     def to_dict(self):
         return {
             'id': self.id,
@@ -62,6 +61,7 @@ class Class(db.Model, SerializerMixin):
             'teacher_id': self.teacher_id,
             'class_capacity': self.class_capacity
         }
+
 
 # Student Model
 class Student(db.Model, SerializerMixin):
@@ -100,11 +100,6 @@ class Student(db.Model, SerializerMixin):
             'guardian_email': self.guardian_email
         }
 
-    @validates('admission_no')
-    def validate_admission_no(self, key, admission_no):
-        if admission_no <= 0:
-            raise ValueError("Admission number must be positive.")
-        return admission_no
 
 # Subject Model
 class Subject(db.Model, SerializerMixin):
@@ -122,6 +117,7 @@ class Subject(db.Model, SerializerMixin):
             'name': self.name
         }
 
+
 # Student-Subject Association Table
 class StudentSubject(db.Model, SerializerMixin):
     __tablename__ = 'student_subject'
@@ -133,23 +129,3 @@ class StudentSubject(db.Model, SerializerMixin):
     # Relationships
     student = db.relationship("Student", back_populates="student_subjects")
     subject = db.relationship("Subject", back_populates="student_subjects")
-
-# Attendance Model
-class Attendance(db.Model, SerializerMixin):
-    __tablename__ = 'attendance'
-
-    id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
-    date = db.Column(db.Date, nullable=False)
-    status = db.Column(db.String(10), nullable=False)  # 'present' or 'absent'
-
-    # Relationship to Student
-    student = db.relationship("Student", backref="attendance_records", lazy=True)
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'student_id': self.student_id,
-            'date': self.date.strftime('%Y-%m-%d'),
-            'status': self.status
-        }

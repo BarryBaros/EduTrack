@@ -1,20 +1,24 @@
-
+// App.js
 import React from 'react';
-import './App.css';
-import Student from './components/students'; // Import the Student component
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import StudentProfile from './pages/StudentProfile';
+import AcademicPerformance from './pages/AcademicPerformance';
+import Attendance from './pages/Attendance';
+import Assignments from './pages/Assignments';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <Router>
+    <Router>
       <Routes>
-        <Route path="/" element={<Student /> } />
+        <Route path="/" element={<StudentProfile />} />
+        <Route path="/academic-performance" element={<AcademicPerformance />} />
+        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/assignments" element={<Assignments />} />
       </Routes>
     </Router>
-      
-    </div>
   );
 }
 
 export default App;
+
+
