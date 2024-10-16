@@ -7,45 +7,63 @@
   display: flex;
 }
 
-.sidebar{
+.sidebar {
   width: 60px;
-  background-color: #4a4a4a;
+  background-color: #363636;
   height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: space-between; 
   padding-top: 20px;
 }
+.sidebar:hover{
+  background-color: #ffffff99;;
+}
 
-.sidebar ul{
+.sidebar ul {
   list-style: none;
   padding: 0;
 }
 
-.sidebar ul li{
-  margin: 20px 0;
+.sidebar ul li {
+  margin: 20px 0 20px 10px;
 }
 
-.sidebar ul li a{
+.sidebar ul li a {
   color: #fff;
   text-decoration: none;
   font-size: 0.5rem;
 }
+.dropdown-icon {
+  margin-bottom: 20px;
+  margin-left: 10px;
 
-.social-icon.linkedin img::before{
-  font-size: 0.5rem;
+}
+
+
+.dropdown-icon img {
+  width: 35px; 
+  height: auto; 
+  cursor: pointer; 
   
 }
 
-.social-icon.instagram::before{
-  font-size: 0.5rem;
-}
-.social-icon.youtube::before{
+.social-icon.linkedin img,
+.social-icon.instagram img,
+.social-icon.youtube img {
+  width: 35px;
+  height: auto;
+  cursor: pointer;
 
-  font-size: 1.2rem;
+}
+
+.social-icon.linkedin::before,
+.social-icon.instagram::before,
+.social-icon.youtube::before {
+  font-size: 0.5rem; /* Adjust sizes accordingly */
 }
 
 .main-content{
@@ -85,12 +103,13 @@
 
 .header nav {
   display: flex;
-  align-items: center; /* Vertically align the image and the button */
+  align-items: center; 
 }
 
 .header nav img {
-  margin-right: 10px; /* Add space between the image and the button */
-  height: 30px; /* Adjust the height of the image */
+  margin-right: 10px; 
+  height: 30px; 
+  
 }
 
 
@@ -99,10 +118,11 @@
   background-color: none; /* You can customize the button style further */
   border: none;
   color: #333;
-  padding: 10px 20px;
   font-size: 1rem;
   cursor: pointer;
+  padding: 5px 10px;
   border-radius: 5px;
+  background-color: #ffffff99;
 }
 
 .header nav .logout-btn:hover {
@@ -120,8 +140,10 @@
 }
 
 .hero h1{
-  font-size: 3.7rem;
+  font-size: 5.0rem;
   margin-bottom: 20px;
+  color: #313131;
+  font-weight: 500;
 
 }
 
@@ -157,25 +179,21 @@
   color: #f1f1f1;
   text-align: center;
 }
-.join{
-  padding: 40px;
-  background-color: #f1f1f1;
-  
+.join {
+  padding: 20px; 
+  background-color: #f9f9f9; 
+  margin-top: 20px;
 }
-.join-content {
-  display: flex;
-  justify-content: space-between; /* Ensures space between the form and text */
-  align-items: flex-start; /* Align them horizontally, starting from the top */
-  flex-wrap: nowrap; /* Prevents wrapping so they stay in one line */
-  width: 100%;
+
+.join-context {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: flex-start; 
 }
+
 .join-text {
-  flex: 1;
-  padding-right: 20px;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  flex: 1; 
+  padding-right: 20px; 
 }
 
 .join-text p{
@@ -200,12 +218,9 @@
   margin-bottom: 20px;
 }
 .contact-form {
-  flex: 1;
-  max-width: 35%; /* Ensures the form doesn’t take too much space */
-  margin-left: 20px; /* Adds space between text and form */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Aligns form items at the top */
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
 }
 
 .contact-form h3{
@@ -215,27 +230,22 @@
 }
 
 .contact-form input,
-.contact-form textarea{
-  padding: 10px;
-  font-size: 1rem;
-  width: 100%;
-  margin-bottom: 10px;
-  max-width: 400px;
-  border-radius: 0.3rem;
-  max-height: fit-content;
+.contact-form textarea {
+    margin-bottom: 10px; 
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
 }
 
-.contact-form button{
-  padding: 10px 20px;
-  background-color: #3333339a;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  width: 50%;
-  margin-top: 10px;
-  margin-left: 10%;
-  border-radius: 0.3rem;
+.contact-form button {
+  padding: 10px; 
+  background-color: #007bff;
+  color: white; 
+  border: none; 
+  border-radius: 5px; 
+  cursor: pointer; 
 }
+
 
 .contact-form button:hover{
   background-color: #c9c9c9;
@@ -283,7 +293,7 @@ footer{
 
 .footer-top .newsletter-form button{
   padding: 8px 10px;
-  background-color: #b0b0b0;
+  background-color: #007bff; 
   color: #ffffff;
   border: none;
   cursor: pointer;
