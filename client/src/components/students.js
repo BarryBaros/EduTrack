@@ -1,16 +1,16 @@
 import React from 'react';
-import './students.css'; // Ensure this file is styled properly
+import './students.css'; // Ensure to update CSS for better styling
 
 const Student = () => {
   return (
     <div className="student-container">
       {/* Left Sidebar */}
       <div className="sidebar">
-        <h2>STUDENT</h2>
+        <p className="sidebar-title">STUDENT</p>
         <ul className="social-icons">
-          <li><i className="fab fa-linkedin"></i></li>
-          <li><i className="fab fa-facebook"></i></li>
-          <li><i className="fab fa-youtube"></i></li>
+          <li><i className="icon-linkedin"></i></li>
+          <li><i className="icon-facebook"></i></li>
+          <li><i className="icon-youtube"></i></li>
         </ul>
       </div>
 
@@ -19,46 +19,49 @@ const Student = () => {
         {/* Student Info */}
         <div className="student-info">
           <div className="student-image">
-            <img src="https://via.placeholder.com/150" alt="Student" />
+            <img src="student-image-url" alt="Student" className="profile-pic"/>
           </div>
           <div className="student-details">
-            <h3>John Doe</h3>
-            <p><strong>Adm No:</strong> 123456</p>
-            <p><strong>Class:</strong> 10A</p>
+            <h2 className="student-name">John Doe</h2>
+            <p className="student-adm"><strong>Adm No:</strong> 123456</p>
+            <p className="student-class"><strong>Class:</strong> 10A</p>
           </div>
         </div>
 
         {/* Grades Table */}
         <div className="grades-table">
-          <h4>Grades</h4>
+          <h3 className="table-title">Student Grades</h3>
           <table>
             <thead>
               <tr>
                 <th>Subject</th>
+                <th>Marks</th>
                 <th>Grade</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>MATHS</td><td>A</td></tr>
-              <tr><td>ENG</td><td>B+</td></tr>
-              <tr><td>KISW</td><td>B</td></tr>
-              <tr><td>PHY</td><td>A-</td></tr>
-              <tr><td>BIO</td><td>B+</td></tr>
-              <tr><td>CHEM</td><td>A</td></tr>
-              <tr><td>GEO</td><td>B</td></tr>
-              <tr><td>HIST</td><td>A-</td></tr>
-              <tr><td>BUS</td><td>B+</td></tr>
-              <tr><td>C.R.E</td><td>A</td></tr>
-              <tr><td>COMP</td><td>A</td></tr>
-              <tr className="total-row"><td>Total</td><td>89%</td></tr>
+              {[
+                "MATHS", "ENG", "KISW", "PHY", "BIO", "CHEM", 
+                "GEO", "HIST", "BUS", "C.R.E", "COMP"
+              ].map((subject) => (
+                <tr key={subject}>
+                  <td>{subject}</td>
+                  <td><input type="number" placeholder="Enter Marks" /></td>
+                  <td><input type="text" placeholder="Enter Grade" /></td>
+                </tr>
+              ))}
+              <tr>
+                <td>Total</td>
+                <td> -- </td>
+                <td> -- </td>
+              </tr>
             </tbody>
           </table>
         </div>
 
         {/* Attendance Section */}
         <div className="attendance-section">
-          <h4>Attendance</h4>
-          <p>100%</p>
+          <h3>Attendance</h3>
           <div className="progress-circle">
             <div className="circle">
               <div className="mask full">
