@@ -1,11 +1,12 @@
-// src/pages/Attendance.js
+// pages/Attendance.js
 import React from 'react';
 
 const Attendance = () => {
   return (
-    <div>
+    <div style={{ padding: '20px' }}>
       <h1>Attendance</h1>
-      {/* Add attendance progress bar or circle chart */}
+      <p>Present: 95%</p>
+      <p>Absent: 5%</p>
     </div>
   );
 };
