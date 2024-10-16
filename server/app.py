@@ -22,8 +22,12 @@ login_manager.init_app(app)
 # User loader function for Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
-    # Load user from the database
-    return Admin.query.get(int(user_id))  # Adjust this based on the model you want to load
+     # Load user based on their type (Admin, Teacher, or Student)
+    user = Admin.query.get(int(user_id)) or Teacher.query.get(int(user_id)) or Student.query.get(int(user_id))
+    return user
+    # # Load user from the database
+    # return Admin.query.get(int(user_id))  # Adjust this based on the model you want to load
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
