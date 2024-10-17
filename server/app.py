@@ -1,7 +1,7 @@
 from flask import Flask, make_response, jsonify, request, redirect, url_for, render_template, flash, session
 from flask_migrate import Migrate
 from flask_cors import CORS
-from .models import db, Admin, Teacher, Student, Subject, Class
+from models import db, Admin, Teacher, Student, Subject, Class
 from datetime import datetime
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from dotenv import load_dotenv
@@ -22,8 +22,12 @@ login_manager.init_app(app)
 # User loader function for Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
-    # Load user from the database
-    return Admin.query.get(int(user_id))  # Adjust this based on the model you want to load
+     # Load user based on their type (Admin, Teacher, or Student)
+    user = Admin.query.get(int(user_id)) or Teacher.query.get(int(user_id)) or Student.query.get(int(user_id))
+    return user
+    # # Load user from the database
+    # return Admin.query.get(int(user_id))  # Adjust this based on the model you want to load
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
