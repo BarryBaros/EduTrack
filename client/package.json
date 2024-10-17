@@ -2,12 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-<<<<<<< HEAD
   "proxy": "http://127.0.0.1:5555",
-=======
-  "proxy": "http://127.0.0.1:5555",  
-  
->>>>>>> 58e5de7873bebc93938c08cb6d2b95fd106a8ad6
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -20,11 +15,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-<<<<<<< HEAD
-    "start": " PORT=3000 react-scripts start",
-=======
     "start": " PORT 3000 react-scripts start",
->>>>>>> 58e5de7873bebc93938c08cb6d2b95fd106a8ad6
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
