@@ -1,0 +1,52 @@
+/* src/components/StudentProfile.css */
+.student-profile {
+  margin-top: 20px;
+}
+
+.profile-header {
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 20px;
+}
+
+.student-info h3 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.grades-section {
+  display: flex;
+  margin-top: 30px;
+  justify-content: space-between;
+}
+
+.grades-card, .attendance-card {
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 48%;
+}
+
+.grades-card table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.grades-card table td {
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.attendance-circle {
+  width: 120px;
+  height: 120px;
+  background-color: #2ecc71;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  color: white;
+}

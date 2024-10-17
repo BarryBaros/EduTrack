@@ -2,18 +2,17 @@
 import React from 'react';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
-import StudentTable from './components/StudentTable';
+import StudentProfile from './components/StudentProfile';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
       <Topbar />
-      <div className="app-content">
+      <div className="app-container">
         <Sidebar />
         <div className="content">
-          <h1>Student Management System</h1>
-          <StudentTable />
+          <StudentProfile />
         </div>
       </div>
     </div>
