@@ -7,68 +7,11 @@
   display: flex;
 }
 
-.sidebar {
-  width: 60px;
-  background-color: #363636;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; 
-  padding-top: 20px;
-}
-.sidebar:hover{
-  background-color: #ffffff99;;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar ul li {
-  margin: 20px 0 20px 10px;
-}
-
-.sidebar ul li a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 0.5rem;
-}
-.dropdown-icon {
-  margin-bottom: 20px;
-  margin-left: 10px;
-
-}
-
-
-.dropdown-icon img {
-  width: 35px; 
-  height: auto; 
-  cursor: pointer; 
-  
-}
-
-.social-icon.linkedin img,
-.social-icon.instagram img,
-.social-icon.youtube img {
-  width: 35px;
-  height: auto;
-  cursor: pointer;
-
-}
-
-.social-icon.linkedin::before,
-.social-icon.instagram::before,
-.social-icon.youtube::before {
-  font-size: 0.5rem; /* Adjust sizes accordingly */
-}
 
 .main-content{
-  margin-left: 60px;
+  padding: 1px;
   width: 100%;
+  flex-grow: 1;
   
 }
 
@@ -115,7 +58,7 @@
 
 
 .header nav .logout-btn {
-  background-color: none; /* You can customize the button style further */
+  background-color: none; 
   border: none;
   color: #333;
   font-size: 1rem;
@@ -151,6 +94,34 @@
   font-size: 2rem;
   color: #313131;
 }
+.typewriter {
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 1px solid;
+  display: inline-block;
+  width: 0;
+  animation: typing 8s steps(40, end), blink-caret 0.75s step-end infinite;
+  animation-iteration-count: infinite;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink-caret {
+  from, to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: black;
+  }
+}
+
 
 .goals{
   padding: 30px;
@@ -197,7 +168,7 @@
 }
 
 .join-text p{
-  font-size: 1.2 rem;
+  font-size: 1.1 rem;
   color: #333;
   
 }
@@ -255,7 +226,7 @@
 footer{
   background-color: #4a4a4a;
   color: #fff;
-  padding: 40px 20px;
+  padding: 10px 20px;
 }
 .footer-top{
   display: flex;
@@ -287,7 +258,7 @@ footer{
 }
 .footer-top .newsletter-form input{
   padding: 8px;
-  font-size: 1rem;
+  font-size: 0.8rem;
   border-radius: 0.3rem;
 }
 
@@ -298,6 +269,7 @@ footer{
   border: none;
   cursor: pointer;
   border-radius: 0.3rem;
+  font-size: 0.8rem;
   
 }
 
@@ -308,11 +280,31 @@ footer{
 }
 
 
-.footer-bottom{
+.footer-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  margin-top: 20px;
 }
 
-.footer-bottom p{
-  font-size: 1rem;
+.footer-bottom ul {
+  display: flex; 
+  padding: 0;
+  margin: 0;
+  list-style: none; 
+}
+
+.footer-bottom ul li {
+  margin: 0 10px; 
+}
+
+.footer-bottom ul li a img {
+  width: 20px; 
+  height: 20px;
+}
+
+.footer-bottom p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #fff;
 }
