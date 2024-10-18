@@ -32,6 +32,7 @@ function Login({onLogin}){
                             value={admissionNumber}
                             onChange={(e) => setAdmissionNumber(e.target.value)}
                             placeholder="Enter admission number"
+                            disabled={staffNumber}
                         />
                         </div>
 
@@ -42,6 +43,7 @@ function Login({onLogin}){
                             value={staffNumber}
                             onChange={(e) => setStaffNumber(e.target.value)}
                             placeholder="Enter staff number"
+                            disabled={admissionNumber}
                         />
                         </div>
 
