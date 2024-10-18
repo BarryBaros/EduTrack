@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import 'boxicons'; // Ensure boxicons are installed and imported
+import { useNavigate } from "react-router-dom"; 
+import "boxicons"; 
 
-function TeachersPage({ teacherName = "Mr John Kennedy", studentName = "Sarah James" }) {
+function TeachersPage({
+  teacherName = "Mr John Kennedy",
+  studentName = "Sarah James",
+}) {
   const [student, setStudent] = useState("");
   const [marks, setMarks] = useState({});
   const [remarks, setRemarks] = useState({});
@@ -11,38 +14,60 @@ function TeachersPage({ teacherName = "Mr John Kennedy", studentName = "Sarah Ja
   const [editSubject, setEditSubject] = useState(null);
   const [searchStatus, setSearchStatus] = useState("");
   const [notification, setNotification] = useState("");
+  const [selectedYear, setSelectedYear] = useState("2010");
 
   // Attendance state
   const [attendance, setAttendance] = useState({
     "First Term": {
-      "January": { present: 0, absent: 0 },
-      "February": { present: 0, absent: 0 },
-      "March": { present: 0, absent: 0 },
+      January: { present: 0, absent: 0 },
+      February: { present: 0, absent: 0 },
+      March: { present: 0, absent: 0 },
     },
     "Second Term": {
-      "May": { present: 0, absent: 0 },
-      "June": { present: 0, absent: 0 },
-      "July": { present: 0, absent: 0 },
+      May: { present: 0, absent: 0 },
+      June: { present: 0, absent: 0 },
+      July: { present: 0, absent: 0 },
     },
     "Third Term": {
-      "September": { present: 0, absent: 0 },
-      "October": { present: 0, absent: 0 },
-      "November": { present: 0, absent: 0 },
-    }
+      September: { present: 0, absent: 0 },
+      October: { present: 0, absent: 0 },
+      November: { present: 0, absent: 0 },
+    },
   });
 
-  const subjects = ["Maths", "English", "Kiswahili", "Biology", "Chemistry", "Physics", "History"];
+  const subjects = [
+    "Maths",
+    "English",
+    "Kiswahili",
+    "Biology",
+    "Chemistry",
+    "Physics",
+    "History",
+  ];
   const classes = ["Form-1", "Form-2", "Form-3", "Form-4"]; // List of classes
+  const years = ["2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"];
 
   const navigate = useNavigate(); // Initialize the navigate function
-
-  const handleSearch = () => {
-    if (student.toLowerCase() === studentName.toLowerCase()) {
-      setSearchStatus("Successful");
-      alert(`Student ${studentName} found!`);
-    } else {
-      setSearchStatus("Student not found");
-      alert("Student not found! Please check the admission number.");
+  
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5555/students/${student}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      
+      if (data.name.toLowerCase() === studentName.toLowerCase()) {
+        setSearchStatus("Successful");
+        alert(`Student ${data.name} found!`);
+      } else {
+        setSearchStatus("Student not found");
+        alert("Student not found! Please check the admission number.");
+      }
+    } catch (error) {
+      console.error("Error fetching student:", error);
+      setSearchStatus("Error fetching student data");
+      alert("An error occurred while fetching student data.");
     }
   };
 
@@ -56,9 +81,9 @@ function TeachersPage({ teacherName = "Mr John Kennedy", studentName = "Sarah Ja
 
   const calculateTotalMarks = () => {
     const total = Object.values(marks)
-      .filter(mark => mark !== "")
+      .filter((mark) => mark !== "")
       .reduce((acc, curr) => acc + Number(curr), 0);
-    
+
     return total;
   };
 
@@ -75,13 +100,35 @@ function TeachersPage({ teacherName = "Mr John Kennedy", studentName = "Sarah Ja
     return "E";
   };
 
-  const handleSave = () => {
-    alert("Marks and remarks saved!");
-    // Reset form fields
-    setStudent("");
-    setMarks({});
-    setRemarks({});
-    setSearchStatus("");
+  const handleSave = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5555/save_marks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          student: studentName,
+          marks: marks,
+          remarks: remarks,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      
+      const result = await response.json();
+      alert(result.message); // Assuming your server sends back a success message
+      // Reset form fields
+      setStudent("");
+      setMarks({});
+      setRemarks({});
+      setSearchStatus("");
+    } catch (error) {
+      console.error("Error saving marks:", error);
+      alert("An error occurred while saving marks.");
+    }
   };
 
   const totalMarks = calculateTotalMarks();
@@ -101,15 +148,15 @@ function TeachersPage({ teacherName = "Mr John Kennedy", studentName = "Sarah Ja
 
   // Function to update attendance status
   const updateAttendance = (term, week, status, value) => {
-    setAttendance(prevAttendance => ({
+    setAttendance((prevAttendance) => ({
       ...prevAttendance,
       [term]: {
         ...prevAttendance[term],
         [week]: {
           ...prevAttendance[term][week],
-          [status]: Number(value)
-        }
-      }
+          [status]: Number(value),
+        },
+      },
     }));
   };
 
@@ -127,25 +174,31 @@ function TeachersPage({ teacherName = "Mr John Kennedy", studentName = "Sarah Ja
   return (
     <div className="teachers-page">
       {/* Notification Pop-up */}
-      {notification && (
-        <div className="notification-popup">
-          {notification}
-        </div>
-      )}
+      {notification && <div className="notification-popup">{notification}</div>}
 
       <div className="sidebar">
         <div className="menu-toggle" onClick={toggleMenu}>
-          {menuVisible ? <box-icon name='x'></box-icon> : <box-icon name='menu'></box-icon>}
+          {menuVisible ? <i class="bx bx-x"></i> : <i class="bx bx-menu"></i>}
         </div>
         {menuVisible && (
           <ul>
             <li onClick={() => navigateTo("/")}>Home</li>
             <li onClick={() => navigateTo("/about")}>About</li>
             <li onClick={() => navigateTo("/teachers")}>Teachers</li>
-            <li onClick={() => navigateTo("/students-report")}>Students Report</li>
-            <li onClick={() => navigateTo("/attendance-report")}>Attendance-report</li>
+            <li onClick={() => navigateTo("/students-report")}>
+              Students Report
+            </li>
+            <li onClick={() => navigateTo("/attendance-report")}>
+              Attendance-report
+            </li>
           </ul>
         )}
+
+        <div className="social-icons">
+         <i class='bx bxl-facebook-square' ></i>
+         <i class='bx bxl-twitter'></i>
+         <i class='bx bxl-linkedin-square' ></i>
+        </div>
       </div>
 
       <div className="main-content">
@@ -153,7 +206,7 @@ function TeachersPage({ teacherName = "Mr John Kennedy", studentName = "Sarah Ja
           <h1>Welcome, {teacherName}</h1>
           <div className="logout-container" onClick={handleLogout}>
             <span className="logout-text">Logout</span>
-            <box-icon name='log-out'></box-icon>
+            <i class="bx bx-log-out"></i>
           </div>
         </div>
 
@@ -172,9 +225,14 @@ function TeachersPage({ teacherName = "Mr John Kennedy", studentName = "Sarah Ja
         )}
 
         <h2>Select Class</h2>
-        <select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)}>
+        <select
+          value={selectedClass}
+          onChange={(e) => setSelectedClass(e.target.value)}
+        >
           {classes.map((className) => (
-            <option key={className} value={className}>{className}</option>
+            <option key={className} value={className}>
+              {className}
+            </option>
           ))}
         </select>
 
@@ -188,7 +246,7 @@ function TeachersPage({ teacherName = "Mr John Kennedy", studentName = "Sarah Ja
             </tr>
           </thead>
           <tbody>
-            {subjects.map(subject => (
+            {subjects.map((subject) => (
               <tr key={subject}>
                 <td>{subject}</td>
                 <td>
@@ -218,6 +276,18 @@ function TeachersPage({ teacherName = "Mr John Kennedy", studentName = "Sarah Ja
 
         <hr />
         <h2 className="h2-attendance">ATTENDANCE</h2>
+        <h3 className="year">Select Year
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+          >
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </h3>
         {Object.entries(attendance).map(([term, weeks]) => (
           <div key={term} className="attendance-term">
             <h3>{term}</h3>
@@ -227,23 +297,35 @@ function TeachersPage({ teacherName = "Mr John Kennedy", studentName = "Sarah Ja
                 <input
                   type="number"
                   value={present}
-                  onChange={(e) => updateAttendance(term, week, 'present', e.target.value)}
+                  onChange={(e) =>
+                    updateAttendance(term, week, "present", e.target.value)
+                  }
                   placeholder="Present"
                 />
                 <input
                   type="number"
                   value={absent}
-                  onChange={(e) => updateAttendance(term, week, 'absent', e.target.value)}
+                  onChange={(e) =>
+                    updateAttendance(term, week, "absent", e.target.value)
+                  }
                   placeholder="Absent"
                 />
               </div>
             ))}
             {/* Total present and absent counts for each term */}
             <div className="results">
-              Total Present: {Object.values(weeks).reduce((acc, { present }) => acc + present, 0)}
+              Total Present:{" "}
+              {Object.values(weeks).reduce(
+                (acc, { present }) => acc + present,
+                0
+              )}
             </div>
             <div className="results">
-              Total Absent: {Object.values(weeks).reduce((acc, { absent }) => acc + absent, 0)}
+              Total Absent:{" "}
+              {Object.values(weeks).reduce(
+                (acc, { absent }) => acc + absent,
+                0
+              )}
             </div>
           </div>
         ))}
