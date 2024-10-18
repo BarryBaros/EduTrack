@@ -1,5 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-
+/* In your styles.css or a specific CSS file */
 .App {
   text-align: center;
 }
@@ -14,6 +17,7 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+/* In your styles.css or a specific CSS file */
 
 .App-header {
   background-color: #282c34;

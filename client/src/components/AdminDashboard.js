@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import AddTeacher from './AddTeacher';
 import AddStudent from './AddStudent';
-import UserList from './UserList';
 
 const AdminDashboard = () => {
     const [teachers, setTeachers] = useState([]);
     const [students, setStudents] = useState([]);
+    const [selectedStudent, setSelectedStudent] = useState(null);
 
-    // Function to fetch teachers
     const fetchTeachers = async () => {
-        const response = await fetch('http://localhost:5555/teachers'); // Adjust the URL if needed
+        const response = await fetch('http://127.0.0.1:5555/teachers');
         const data = await response.json();
         setTeachers(data);
     };
 
-    // Function to fetch students
     const fetchStudents = async () => {
-        const response = await fetch('http://localhost:5555/students'); // Adjust the URL if needed
+        const response = await fetch('http://127.0.0.1:5555/students');
         const data = await response.json();
         setStudents(data);
     };
@@ -27,16 +25,23 @@ const AdminDashboard = () => {
     }, []);
 
     return (
-        <div className="w-3/4 p-6">
-            <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
-            <AddTeacher fetchTeachers={fetchTeachers} />
-            <AddStudent fetchStudents={fetchStudents} />
-
-            <h2 className="text-2xl font-semibold mt-6">Teacher List</h2>
-            <UserList users={teachers} userType="Teacher" />
-
-            <h2 className="text-2xl font-semibold mt-6">Student List</h2>
-            <UserList users={students} userType="Student" />
+        <div className="flex flex-col md:flex-row p-6">
+            {/* Teachers Section */}
+            <div className="md:w-1/2 p-4 bg-white rounded-lg shadow-md mb-4 md:mb-0 md:mr-2">
+                <h1 className="text-green-700 font-bold text-xl mb-4">Teachers</h1>
+                <AddTeacher fetchTeachers={fetchTeachers} />
+            </div>
+            
+            {/* Students Section */}
+            <div className="md:w-1/2 p-4 bg-white rounded-lg shadow-md">
+                <h1 className="text-green-700 font-bold text-xl mb-4">Students</h1>
+                <AddStudent 
+                    fetchStudents={fetchStudents} 
+                    selectedStudent={selectedStudent} 
+                    setSelectedStudent={setSelectedStudent} 
+                    students={students} 
+                />
+            </div>
         </div>
     );
 };
