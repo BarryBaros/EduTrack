@@ -61,12 +61,25 @@ function Homepage(){
                                 </p>
 
                            </div>
-                        <form className='contact-form'>
+                        <form
+                            className='contact-form'
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                const email = e.target[0].value;  // Getting the email input
+                                const message = e.target[1].value; // Getting the textarea input
+                                const mailtoLink = `mailto:mmegaway1995@gmail.com?subject=Join%20EduTrack&body=From:%20${email}%0D%0A%0D%0A${encodeURIComponent(message)}`;
+
+                                // Redirect to the mailto link
+                                window.location.href = mailtoLink;
+                            }}
+                            >
+                        
                             <h3>Get In Touch</h3>
-                            <input type='email' placeholder='Email'/>
-                            <textarea placeholder='Tell us why you want to join...'/>
+                            <input type='email' placeholder='Email' required/>
+                            <textarea placeholder='Tell us why you want to join...' required/>
                             <button type='submit'>Join Now</button>
-                        </form>
+                    </form>
+
                         </div>
                     </section>
                 </main>
