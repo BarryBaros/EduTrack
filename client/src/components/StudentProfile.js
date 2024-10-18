@@ -15,15 +15,22 @@ function StudentProfile() {
 
       <div className="grades-section">
         <div className="grades-card">
-          <h4>Grades</h4>
+          <h4>Grades & Marks</h4>
           <table>
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Marks</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr><td>Math:</td><td>A</td></tr>
-              <tr><td>English:</td><td>B+</td></tr>
-              <tr><td>Physics:</td><td>A-</td></tr>
-              <tr><td>Chemistry:</td><td>B</td></tr>
-              <tr><td>Computer:</td><td>B</td></tr>
-              <tr><td>Total:</td><td>87%</td></tr>
+              <tr><td>Math:</td><td>95/100</td><td>A</td></tr>
+              <tr><td>English:</td><td>88/100</td><td>B+</td></tr>
+              <tr><td>Physics:</td><td>92/100</td><td>A-</td></tr>
+              <tr><td>Chemistry:</td><td>85/100</td><td>B</td></tr>
+              <tr><td>Computer:</td><td>78/100</td><td>B</td></tr>
+              <tr><td><b>Total:</b></td><td><b>438/500</b></td><td><b>87%</b></td></tr>
             </tbody>
           </table>
         </div>

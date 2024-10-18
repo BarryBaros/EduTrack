@@ -39,14 +39,34 @@
 /* src/App.css */
 .app-container {
   display: flex;
-  height: 100vh;
-  background-color: #f0f2f5;
 }
 
-.content {
+.main-content {
   flex: 1;
   padding: 20px;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: margin-left 0.3s ease;
 }
+
+.sidebar-open {
+  margin-left: 250px; /* Shift content to the right when the sidebar is open */
+}
+
+.toggle-btn {
+  font-size: 1.5rem;
+  background-color: #333;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+}
+
+.toggle-btn:hover {
+  background-color: #444;
+}
+
+
 

@@ -1,6 +1,7 @@
 from sqlalchemy.orm import validates
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import MetaData
 
 metadata = MetaData()
@@ -13,14 +14,21 @@ class Admin(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     staff_id = db.Column(db.Integer, nullable=False, unique=True)
     admin_name = db.Column(db.String(50), nullable=False)
-    pin_no = db.Column(db.Integer, nullable=False)
+    pin_no_hash = db.Column(db.String(128), nullable=False)
+
+    # Hash the pin_no when setting
+    def set_pin_no(self, pin_no):
+        self.pin_no_hash = generate_password_hash(pin_no)
+
+    # Verify pin_no
+    def check_pin_no(self, pin_no):
+        return check_password_hash(self.pin_no_hash, pin_no)
 
     def to_dict(self):
         return {
             'id': self.id,
             'staff_id': self.staff_id,
-            'admin_name': self.admin_name,
-            'pin_no': self.pin_no
+            'admin_name': self.admin_name
         }
 
 
@@ -30,14 +38,21 @@ class Teacher(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     staff_id = db.Column(db.Integer, nullable=False, unique=True)
-    pin_no = db.Column(db.Integer, nullable=False)
+    pin_no_hash = db.Column(db.String(128), nullable=False)
     name = db.Column(db.String(50), nullable=False)
+
+    # Hash the pin_no when setting
+    def set_pin_no(self, pin_no):
+        self.pin_no_hash = generate_password_hash(pin_no)
+
+    # Verify pin_no
+    def check_pin_no(self, pin_no):
+        return check_password_hash(self.pin_no_hash, pin_no)
 
     def to_dict(self):
         return {
             'id': self.id,
             'staff_id': self.staff_id,
-            'pin_no': self.pin_no,
             'name': self.name
         }
 
@@ -70,7 +85,7 @@ class Student(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     admission_no = db.Column(db.Integer, nullable=False, unique=True)
     name = db.Column(db.String(50), nullable=False)
-    pin_no = db.Column(db.Integer, nullable=False)
+    pin_no_hash = db.Column(db.String(128), nullable=False)
     DOB = db.Column(db.Date, nullable=False)
     class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=False)
     general_grade = db.Column(db.String(10), nullable=True)
@@ -82,15 +97,22 @@ class Student(db.Model, SerializerMixin):
     # Relationship to Class
     class_ = db.relationship('Class', backref='students', lazy=True)
 
-    # Many-to-many relationship to Subjects via StudentSubject
-    student_subjects = db.relationship('StudentSubject', back_populates='student', lazy=True)
+    # Many-to-many relationship to Subjects via Grade
+    grades = db.relationship('Grade', backref='student', lazy=True)
+
+    # Hash the pin_no when setting
+    def set_pin_no(self, pin_no):
+        self.pin_no_hash = generate_password_hash(pin_no)
+
+    # Verify pin_no
+    def check_pin_no(self, pin_no):
+        return check_password_hash(self.pin_no_hash, pin_no)
 
     def to_dict(self):
         return {
             'id': self.id,
             'admission_no': self.admission_no,
             'name': self.name,
-            'pin_no': self.pin_no,
             'DOB': self.DOB.strftime('%Y-%m-%d'),
             'class_id': self.class_id,
             'general_grade': self.general_grade,
@@ -108,8 +130,8 @@ class Subject(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
 
-    # Many-to-many relationship to Students via StudentSubject
-    student_subjects = db.relationship('StudentSubject', back_populates='subject', lazy=True)
+    # One-to-many relationship to Grades
+    grades = db.relationship('Grade', backref='subject', lazy=True)
 
     def to_dict(self):
         return {
@@ -118,14 +140,18 @@ class Subject(db.Model, SerializerMixin):
         }
 
 
-# Student-Subject Association Table
-class StudentSubject(db.Model, SerializerMixin):
-    __tablename__ = 'student_subject'
+# Grade Model (for individual grades per student per subject)
+class Grade(db.Model, SerializerMixin):
+    __tablename__ = 'grades'
 
-    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), primary_key=True)
-    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), primary_key=True)
-    grade = db.Column(db.String(10))
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), nullable=False)
+    grade = db.Column(db.String(2))  # Example: 'A', 'B', etc.
 
-    # Relationships
-    student = db.relationship("Student", back_populates="student_subjects")
-    subject = db.relationship("Subject", back_populates="student_subjects")
+    def to_dict(self):
+        return {
+            'student_id': self.student_id,
+            'subject_id': self.subject_id,
+            'grade': self.grade
+        }

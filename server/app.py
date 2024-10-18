@@ -1,11 +1,12 @@
-from flask import Flask, make_response, jsonify, request, redirect, url_for, render_template, flash, session
+from flask import Flask, jsonify, request, redirect, url_for, render_template, flash, session
 from flask_migrate import Migrate
 from flask_cors import CORS
-from .models import db, Admin, Teacher, Student, Subject, Class
+from .models import db, Admin, Teacher, Student, Subject, Class, Grade
 from datetime import datetime
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from dotenv import load_dotenv
 import os
+from werkzeug.utils import secure_filename
 
 # Load environment variables from .env file
 load_dotenv()
@@ -22,137 +23,168 @@ login_manager.init_app(app)
 # User loader function for Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
-    # Load user from the database
     return Admin.query.get(int(user_id))  # Adjust this based on the model you want to load
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
-CORS(app)
+# Config for image uploads
+app.config['UPLOAD_FOLDER'] = 'uploads/'  # Ensure this folder exists
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limit upload size to 16MB
 
+CORS(app)
 migrate = Migrate(app, db)
 db.init_app(app)
 
 @app.route('/')
 def index():
-    return 'Hi, welcome to the EduTrack!'
+    return 'Hi, welcome to EduTrack!'
 
-# Get all teachers
-@app.route('/teachers', methods=['GET'])
-def get_teachers():
-    teachers = Teacher.query.all()
-    return jsonify([teacher.name for teacher in teachers])
+# ------------------ Student Management ------------------
 
-# Create a new teacher
-@app.route('/teachers', methods=['POST'])
-def create_teacher():
-    data = request.get_json()
-    new_teacher = Teacher(
-        staff_id=data['staff_id'],
-        pin_no=data['pin_no'],
-        name=data['name']
-    )
-    db.session.add(new_teacher)
-    db.session.commit()
-    return jsonify({'message': 'Teacher created successfully'}), 201
+@app.route('/student/<int:student_id>', methods=['GET'])
+@login_required
+def get_student(student_id):
+    student = Student.query.get(student_id)
+    if not student:
+        return jsonify({'error': 'Student not found'}), 404
 
-# Get all students
-@app.route('/students', methods=['GET'])
-def get_students():
-    students = Student.query.all()
-    return jsonify([student.name for student in students])
-
-# Get all admins
-@app.route('/admins', methods=['GET'])
-def get_admins():
-    admins = Admin.query.all()
-    return jsonify([{'staff_id': admin.staff_id, 'admin_name': admin.admin_name} for admin in admins])
-
-# Get a single student by ID
-@app.route('/students/<int:id>', methods=['GET'])
-def get_student(id):
-    student = Student.query.get_or_404(id)
-    return jsonify({
-        'name': student.name,
+    student_data = {
+        'id': student.id,
         'admission_no': student.admission_no,
-        'DOB': student.DOB.strftime('%Y-%m-%d'),
-        'class_id': student.class_id
-    })
+        'name': student.name,
+        'class_name': student.class_.class_name,
+        'grades': [{'subject': grade.subject.name, 'grade': grade.grade} for grade in student.grades],
+        'attendance': student.attendance,
+        'guardian_name': student.guardian_name,
+        'guardian_contact': student.guardian_contact,
+        'guardian_email': student.guardian_email,
+        'image': student.image or '/path/to/default-image.jpg'  # Default image if not set
+    }
+    return jsonify(student_data)
 
-# Create a new student
-@app.route('/students', methods=['POST'])
-def create_student():
+# Update Student Profile
+@app.route('/student/<int:student_id>', methods=['PUT'])
+@login_required
+def update_student(student_id):
+    student = Student.query.get(student_id)
+    if not student:
+        return jsonify({'error': 'Student not found'}), 404
+
+    # Ensure the user is authorized to edit the profile
+    if current_user.id != student.id and not isinstance(current_user, Teacher):
+        return jsonify({'error': 'Unauthorized access'}), 403
+
     data = request.get_json()
-    new_student = Student(
-        admission_no=data['admission_no'],
-        name=data['name'],
-        pin_no=data['pin_no'],
-        DOB=datetime.strptime(data['DOB'], '%Y-%m-%d'),
-        class_id=data['class_id'],
-        general_grade=data.get('general_grade', ''),
-        address=data.get('address', ''),
-        guardian_name=data.get('guardian_name', ''),
-        guardian_contact=data.get('guardian_contact', ''),
-        guardian_email=data.get('guardian_email', '')
-    )
-    db.session.add(new_student)
-    db.session.commit()
-    return jsonify({'message': 'Student created successfully'}), 201
+    
+    # Update student details
+    student.guardian_name = data.get('guardian_name', student.guardian_name)
+    student.guardian_contact = data.get('guardian_contact', student.guardian_contact)
+    student.guardian_email = data.get('guardian_email', student.guardian_email)
 
-# Update student
-@app.route('/students/<int:id>', methods=['PUT'])
-def update_student(id):
-    student = Student.query.get_or_404(id)
+    # Save the updated student object
+    db.session.commit()
+    return jsonify({'message': 'Student profile updated successfully.'}), 200
+
+# Upload Student Image
+@app.route('/student/<int:student_id>/upload_image', methods=['POST'])
+@login_required
+def upload_student_image(student_id):
+    student = Student.query.get(student_id)
+    if not student:
+        return jsonify({'error': 'Student not found'}), 404
+
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image file provided.'}), 400
+    
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file.'}), 400
+
+    # Save the image file
+    filename = secure_filename(file.filename)
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(file_path)
+
+    student.image = file_path  # Assuming this is where you store the image path in your model
+    db.session.commit()
+
+    return jsonify({'message': 'Image uploaded successfully!', 'image_path': student.image}), 201
+
+# Fetch a student's grades (for students or teachers)
+@app.route('/students/<int:student_id>/grades', methods=['GET'])
+@login_required
+def get_grades(student_id):
+    student = Student.query.get_or_404(student_id)
+
+    # Check if current_user is either the student or a teacher
+    if current_user.id != student.id and not isinstance(current_user, Teacher):
+        return jsonify({'error': 'Unauthorized access'}), 403
+
+    grades = Grade.query.filter_by(student_id=student.id).all()
+    grade_data = {grade.subject.name: grade.grade for grade in grades}
+
+    return jsonify({'student_name': student.name, 'grades': grade_data}), 200
+
+# ------------------ Grade Management ------------------
+
+# Teacher inputting grades for a student
+@app.route('/students/<int:student_id>/grades', methods=['POST'])
+@login_required
+def input_grades(student_id):
+    if not isinstance(current_user, Teacher):
+        return jsonify({'error': 'Unauthorized access'}), 403
+
+    student = Student.query.get_or_404(student_id)
     data = request.get_json()
-    student.name = data['name']
-    student.pin_no = data['pin_no']
-    student.DOB = datetime.strptime(data['DOB'], '%Y-%m-%d')
-    student.class_id = data['class_id']
+
+    for subject_name, grade_value in data.items():
+        subject = Subject.query.filter_by(name=subject_name).first()
+        if subject:
+            new_grade = Grade(
+                student_id=student.id,
+                subject_id=subject.id,
+                grade=grade_value
+            )
+            db.session.add(new_grade)
+        else:
+            return jsonify({'error': f'Subject {subject_name} not found'}), 404
+
     db.session.commit()
-    return jsonify({'message': 'Student updated successfully'})
+    return jsonify({'message': 'Grades recorded successfully'}), 201
 
-# Delete student
-@app.route('/students/<int:id>', methods=['DELETE'])
-def delete_student(id):
-    student = Student.query.get_or_404(id)
-    db.session.delete(student)
-    db.session.commit()
-    return jsonify({'message': 'Student deleted successfully'})
+# ------------------ User Management ------------------
 
-# Get all subjects
-@app.route('/subjects', methods=['GET'])
-def get_subjects():
-    subjects = Subject.query.all()
-    return jsonify([subject.name for subject in subjects])
+# Teacher Login Route
+@app.route('/teacher_login', methods=['POST'])
+def teacher_login():
+    data = request.json
+    staff_id = data.get('staff_id')
+    pin_no = data.get('pin_no')
 
-# Create a new subject
-@app.route('/subjects', methods=['POST'])
-def create_subject():
-    data = request.get_json()
-    new_subject = Subject(name=data['name'])
-    db.session.add(new_subject)
-    db.session.commit()
-    return jsonify({'message': 'Subject created successfully'}), 201
+    teacher = Teacher.query.filter_by(staff_id=staff_id).first()
 
-# Get all classes
-@app.route('/classes', methods=['GET'])
-def get_classes():
-    classes = Class.query.all()
-    return jsonify([cls.class_name for cls in classes])
+    if teacher and teacher.pin_no == pin_no:
+        login_user(teacher)
+        return jsonify({"message": f"Welcome {teacher.name}!", "success": True}), 200
+    else:
+        return jsonify({"message": "Invalid credentials", "success": False}), 401
 
-# Create a new class
-@app.route('/classes', methods=['POST'])
-def create_class():
-    data = request.get_json()
-    new_class = Class(
-        class_name=data['class_name'],
-        teacher_id=data['teacher_id'],
-        class_capacity=data['class_capacity']
-    )
-    db.session.add(new_class)
-    db.session.commit()
-    return jsonify({'message': 'Class created successfully'}), 201
+# Student Login Route
+@app.route('/student_login', methods=['POST'])
+def student_login():
+    data = request.json
+    admission_no = data.get('admission_no')
+    pin_no = data.get('pin_no')
+
+    student = Student.query.filter_by(admission_no=admission_no).first()
+
+    if student and student.pin_no == pin_no:
+        login_user(student)
+        return jsonify({"message": f"Welcome {student.name}!", "success": True}), 200
+    else:
+        return jsonify({"message": "Invalid credentials", "success": False}), 401
 
 # Admin Login Route
 @app.route('/admin_login', methods=['GET', 'POST'])
@@ -161,11 +193,10 @@ def admin_login():
         staff_id = request.form['staff_id']
         pin_no = request.form['pin_no']
 
-        # Query the Admin table to authenticate
         admin = Admin.query.filter_by(staff_id=staff_id).first()
 
-        if admin and admin.pin_no == pin_no:  # Check the PIN without hashing
-            login_user(admin)  # Log the admin in and create a session
+        if admin and admin.pin_no == pin_no:
+            login_user(admin)
             flash(f'Welcome {admin.staff_id}! You are logged in.')
             return redirect(url_for('admin_dashboard'))
         else:
@@ -173,7 +204,7 @@ def admin_login():
 
     return render_template('admin_login.html')
 
-# Admin Dashboard Route
+# ------------------ Admin Dashboard ------------------
 @app.route('/admin_dashboard')
 @login_required
 def admin_dashboard():
@@ -183,47 +214,15 @@ def admin_dashboard():
 @app.route('/admin_logout')
 @login_required
 def admin_logout():
-    logout_user()  # Logs the admin out and clears the session
+    logout_user()
     flash('You have been logged out.')
     return redirect(url_for('admin_login'))
 
-# Teacher Login Route
-@app.route('/teacher_login', methods=['POST'])
-def teacher_login():
-    data = request.json  # Expecting JSON data
-    staff_id = data.get('staff_id')
-    pin_no = data.get('pin_no')
-
-    # Query the Teacher table to authenticate
-    teacher = Teacher.query.filter_by(staff_id=staff_id).first()
-
-    if teacher and teacher.pin_no == pin_no:  # Check the PIN without hashing
-        login_user(teacher)  # Log the teacher in and create a session
-        return jsonify({"message": f"Welcome {teacher.staff_id}!", "success": True}), 200
-    else:
-        return jsonify({"message": "Invalid staff ID or PIN number. Please try again.", "success": False}), 401
-
-# Student Login Route
-@app.route('/student_login', methods=['POST'])
-def student_login():
-    data = request.json  # Expecting JSON data
-    admission_no = data.get('admission_no')
-    pin_no = data.get('pin_no')
-
-    # Query the Student table to authenticate
-    student = Student.query.filter_by(admission_no=admission_no).first()
-
-    if student and student.pin_no == pin_no:  # Check the PIN without hashing
-        login_user(student)  # Log the student in and create a session
-        return jsonify({"message": f"Welcome {student.name}!", "success": True}), 200
-    else:
-        return jsonify({"message": "Invalid admission number or PIN number. Please try again.", "success": False}), 401
-
-# Logout Route (for Teachers and Students)
+# ------------------ Logout for Teachers/Students ------------------
 @app.route('/logout', methods=['POST'])
 @login_required
 def logout():
-    logout_user()  # Logs the user out and clears the session
+    logout_user()
     return jsonify({"message": "You have been logged out.", "success": True}), 200
 
 if __name__ == '__main__':

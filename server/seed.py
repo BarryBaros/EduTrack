@@ -12,7 +12,7 @@ with app.app_context():
     admin2 = Admin(staff_id=1002, admin_name="admin2", pin_no=5678)
 
     teacher1 = Teacher(staff_id=200, name="Michael Juma", pin_no=1100)
-
+    student1 = Student(admission_no=5321,name="Mathew Ndirangu", pin_no_hash=2024, DOB=17/8/2017, class_id=1,address="Nairobi", guardian_name="David",guardian_contact="074538319",guardian_email="David@gmail.com" )
     # Add all instances to the session
     db.session.add(admin1)
     db.session.add(admin2)
