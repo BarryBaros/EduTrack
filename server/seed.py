@@ -1,3 +1,4 @@
+from datetime import datetime
 from app import db, app
 from models import Admin, Teacher, Student, Subject, Class
 
@@ -12,6 +13,21 @@ with app.app_context():
     admin2 = Admin(staff_id=1002, admin_name="admin2", pin_no=5678)
 
     teacher1 = Teacher(staff_id=200, name="Michael Juma", pin_no=1100)
+
+    class1 = Class()
+
+    student1 = Student(
+    admission_no=10001, 
+    name="Sarah James", 
+    pin_no=1111, 
+    DOB=datetime.strptime('2005-05-10', '%Y-%m-%d').date(),  
+    general_grade='A', 
+    address='123 Main St', 
+    guardian_name='John James', 
+    guardian_contact='555-1234', 
+    guardian_email='john.james@example.com'
+    )
+
 
     # Add all instances to the session
     db.session.add(admin1)
