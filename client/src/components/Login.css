@@ -1,7 +1,9 @@
 *{
     color:white;
-    /* font-family: */
+    font-family:Studio Feixen Sans;
+    /* background: url('../assets/student.jpg')no-repeat; */
 }
+
 
 .login-container{
     box-sizing: border-box;
@@ -47,7 +49,7 @@
     border: none;
     outline:none;
     color:#05192d;
-    font-weight:400;
+    font-weight:700;
     font-size:16px;
     background-color: #03ef62;
   }
