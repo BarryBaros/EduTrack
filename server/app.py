@@ -22,12 +22,8 @@ login_manager.init_app(app)
 # User loader function for Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
-     # Load user based on their type (Admin, Teacher, or Student)
     user = Admin.query.get(int(user_id)) or Teacher.query.get(int(user_id)) or Student.query.get(int(user_id))
     return user
-    # # Load user from the database
-    # return Admin.query.get(int(user_id))  # Adjust this based on the model you want to load
-
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -40,13 +36,13 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    return 'Hi, welcome to the EduTrack!'
+    return 'Hi, welcome to EduTrack!'
 
 # Get all teachers
 @app.route('/teachers', methods=['GET'])
 def get_teachers():
     teachers = Teacher.query.all()
-    return jsonify([teacher.name for teacher in teachers])
+    return jsonify([{'staff_id': teacher.staff_id, 'name': teacher.name} for teacher in teachers])
 
 # Create a new teacher
 @app.route('/teachers', methods=['POST'])
@@ -61,11 +57,27 @@ def create_teacher():
     db.session.commit()
     return jsonify({'message': 'Teacher created successfully'}), 201
 
-# Get all students
-@app.route('/students', methods=['GET'])
-def get_students():
-    students = Student.query.all()
-    return jsonify([student.name for student in students])
+# Get a single student by name
+@app.route('/students/name/<name>', methods=['GET'])
+def get_student_by_name(name):
+    student = Student.query.filter_by(name=name).first_or_404()
+    return jsonify({
+        'name': student.name,
+        'admission_no': student.admission_no,
+        'DOB': student.DOB.strftime('%Y-%m-%d'),
+        'class_id': student.class_id
+    })
+
+# Get a single student by admission number
+@app.route('/students/admission/<int:admission_no>', methods=['GET'])
+def get_student_by_admission(admission_no):
+    student = Student.query.filter_by(admission_no=admission_no).first_or_404()
+    return jsonify({
+        'name': student.name,
+        'admission_no': student.admission_no,
+        'DOB': student.DOB.strftime('%Y-%m-%d'),
+        'class_id': student.class_id
+    })
 
 # Get all admins
 @app.route('/admins', methods=['GET'])
@@ -128,7 +140,7 @@ def delete_student(id):
 @app.route('/subjects', methods=['GET'])
 def get_subjects():
     subjects = Subject.query.all()
-    return jsonify([subject.name for subject in subjects])
+    return jsonify([{'id': subject.id, 'name': subject.name} for subject in subjects])
 
 # Create a new subject
 @app.route('/subjects', methods=['POST'])
@@ -143,7 +155,7 @@ def create_subject():
 @app.route('/classes', methods=['GET'])
 def get_classes():
     classes = Class.query.all()
-    return jsonify([cls.class_name for cls in classes])
+    return jsonify([{'id': cls.id, 'class_name': cls.class_name} for cls in classes])
 
 # Create a new class
 @app.route('/classes', methods=['POST'])
@@ -223,12 +235,39 @@ def student_login():
     else:
         return jsonify({"message": "Invalid admission number or PIN number. Please try again.", "success": False}), 401
 
-# Logout Route (for Teachers and Students)
-@app.route('/logout', methods=['POST'])
-@login_required
-def logout():
-    logout_user()  # Logs the user out and clears the session
-    return jsonify({"message": "You have been logged out.", "success": True}), 200
+# Save model 
+@app.route('/save/<model_type>', methods=['POST'])
+def save_model(model_type):
+    data = request.get_json()
+
+    if model_type == 'teacher':
+        new_teacher = Teacher(
+            staff_id=data['staff_id'],
+            pin_no=data['pin_no'],
+            name=data['name']
+        )
+        db.session.add(new_teacher)
+
+    elif model_type == 'student':
+        new_student = Student(
+            admission_no=data['admission_no'],
+            name=data['name'],
+            pin_no=data['pin_no'],
+            DOB=datetime.strptime(data['DOB'], '%Y-%m-%d'),
+            class_id=data['class_id'],
+            general_grade=data.get('general_grade', ''),
+            address=data.get('address', ''),
+            guardian_name=data.get('guardian_name', ''),
+            guardian_contact=data.get('guardian_contact', ''),
+            guardian_email=data.get('guardian_email', '')
+        )
+        db.session.add(new_student)
+
+    else:
+        return jsonify({'message': 'Invalid model type specified.'}), 400
+
+    db.session.commit()
+    return jsonify({'message': f'{model_type.capitalize()} created successfully.'}), 201
 
 if __name__ == '__main__':
-    app.run(port=5555, debug=True)
+    app.run(debug=True, host='127.0.0.1', port=5555)

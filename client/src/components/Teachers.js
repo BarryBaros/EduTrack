@@ -45,13 +45,13 @@ function TeachersPage({
     "History",
   ];
   const classes = ["Form-1", "Form-2", "Form-3", "Form-4"]; // List of classes
-  const years = ["2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"];
+  const years = ["2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"];
 
   const navigate = useNavigate(); // Initialize the navigate function
   
   const handleSearch = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:5555/students/${student}`);
+      const response = await fetch(`http://127.0.0.1:5555/students/name/${student}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -215,7 +215,7 @@ function TeachersPage({
             type="text"
             value={student}
             onChange={(e) => setStudent(e.target.value)}
-            placeholder="Enter student name"
+            placeholder="Enter student name:"
           />
           <button onClick={handleSearch}>Search</button>
         </div>
