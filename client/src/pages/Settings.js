@@ -1,180 +1,108 @@
-import React, { useState } from 'react';
-import {
-  Grid, Paper, Typography, TextField, Button, IconButton, Divider, Avatar, Select, MenuItem, Snackbar, Card, CardContent
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
-import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import MuiAlert from '@mui/material/Alert';
-
-// Custom Alert for Snackbar
-const Alert = React.forwardRef((props, ref) => {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+// src/pages/Settings.js
+import React, { useState, useEffect } from 'react';
+import '../components/SettingsProfile.css'; // Ensure you have a corresponding CSS file
 
 const Settings = () => {
-  const [formData, setFormData] = useState({
-    communicationLanguage: 'English',
-    firstName: 'John',
-    lastName: 'Doe',
-    address1: '123 Main St',
-    address2: '',
-    city: 'Springfield',
-    state: '',
-    zip: '12345',
-    country: 'United States',
-    companyName: '',
-    companyAddress1: '',
-    companyCity: '',
-    companyState: '',
-    companyZip: '',
-  });
+  // State for profile data
+  const [profilePic, setProfilePic] = useState(null);
+  const [studentID, setStudentID] = useState('ADM001'); // Example initial ID
+  const [admissionNo, setAdmissionNo] = useState('12345678');
+  const [address, setAddress] = useState('123 Main Street, City'); // Sample address
 
-  const [editing, setEditing] = useState({
-    accountInfo: false,
-    personalDetails: false,
-    address: false,
-    company: false,
-  });
+  // Load profile data from localStorage if available
+  useEffect(() => {
+    const storedPic = localStorage.getItem('profilePic');
+    const storedID = localStorage.getItem('studentID');
+    const storedAdmissionNo = localStorage.getItem('admissionNo');
+    const storedAddress = localStorage.getItem('address');
 
-  const [profilePic, setProfilePic] = useState(null); // Store profile picture
-  const [openSnackbar, setOpenSnackbar] = useState(false); // Snackbar state for feedback
+    if (storedPic) setProfilePic(storedPic);
+    if (storedID) setStudentID(storedID);
+    if (storedAdmissionNo) setAdmissionNo(storedAdmissionNo);
+    if (storedAddress) setAddress(storedAddress);
+  }, []);
 
-  // Handle file upload for profile picture
+  // Save profile picture to localStorage
   const handleProfilePicChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setProfilePic(e.target.result); // Set base64 image as profilePic
+        const base64Image = e.target.result;
+        setProfilePic(base64Image); // Set base64 image as profilePic
+        localStorage.setItem('profilePic', base64Image); // Save to localStorage
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // Handle input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  // Handlers for saving data to localStorage
+  const handleStudentIDChange = (event) => {
+    const newID = event.target.value;
+    setStudentID(newID);
+    localStorage.setItem('studentID', newID); // Save to localStorage
   };
 
-  // Handle save changes
-  const handleSave = (section) => {
-    setOpenSnackbar(true); // Show success snackbar
-    setEditing({ ...editing, [section]: false });
+  const handleAdmissionNoChange = (event) => {
+    const newAdmissionNo = event.target.value;
+    setAdmissionNo(newAdmissionNo);
+    localStorage.setItem('admissionNo', newAdmissionNo); // Save to localStorage
   };
 
-  // Handle cancel changes
-  const handleCancel = (section) => {
-    setEditing({ ...editing, [section]: false });
+  const handleAddressChange = (event) => {
+    const newAddress = event.target.value;
+    setAddress(newAddress);
+    localStorage.setItem('address', newAddress); // Save to localStorage
   };
 
   return (
-    <Grid container spacing={3} justifyContent="center" style={{ padding: '2rem' }}>
-      <Grid item xs={12} sm={10} md={8}>
-        {/* Profile Picture and Basic Info */}
-        <Paper elevation={3} style={{ padding: '2rem', marginBottom: '2rem', borderRadius: '12px' }}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} sm={4} style={{ textAlign: 'center' }}>
-              <Avatar src={profilePic} sx={{ width: 100, height: 100 }} />
-              <input
-                accept="image/*"
-                style={{ display: 'none' }}
-                id="profile-pic-upload"
-                type="file"
-                onChange={handleProfilePicChange}
-              />
-              <label htmlFor="profile-pic-upload">
-                <IconButton color="primary" aria-label="upload picture" component="span">
-                  <PhotoCamera />
-                </IconButton>
-              </label>
-            </Grid>
-            <Grid item xs={12} sm={8}>
-              <Typography variant="h5">John Doe</Typography>
-              <Typography variant="body1" color="textSecondary">john.doe@example.com</Typography>
-            </Grid>
-          </Grid>
-        </Paper>
+    <div className="settings-page">
+      <h1>Settings</h1>
 
-        {/* Account Information Section */}
-        <Card elevation={3} style={{ marginBottom: '1.5rem' }}>
-          <CardContent>
-            <Typography variant="h6">Account Information</Typography>
-            <Divider style={{ marginBottom: '1rem' }} />
-            <Grid container spacing={2} alignItems="center">
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="User ID"
-                  value="ID: 9234abc..."
-                  fullWidth
-                  disabled
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="User Email"
-                  value="john.doe@example.com"
-                  fullWidth
-                  disabled
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Select
-                  label="Preferred Communication Language"
-                  name="communicationLanguage"
-                  value={formData.communicationLanguage}
-                  onChange={handleInputChange}
-                  fullWidth
-                  disabled={!editing.accountInfo}
-                  margin="normal"
-                >
-                  <MenuItem value="English">English</MenuItem>
-                  <MenuItem value="Spanish">Spanish</MenuItem>
-                </Select>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                {!editing.accountInfo ? (
-                  <IconButton onClick={() => setEditing({ ...editing, accountInfo: true })}>
-                    <EditIcon />
-                  </IconButton>
-                ) : (
-                  <div>
-                    <Button
-                      onClick={() => handleSave('accountInfo')}
-                      startIcon={<SaveIcon />}
-                      variant="contained"
-                      color="primary"
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      onClick={() => handleCancel('accountInfo')}
-                      startIcon={<CancelIcon />}
-                      variant="outlined"
-                      color="secondary"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                )}
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
+      <div className="settings-section">
+        <div className="profile-section">
+          <h2>Profile Picture</h2>
+          <div className="profile-pic-container">
+            <img
+              src={profilePic || 'https://via.placeholder.com/150'} // Default placeholder if no image
+              alt="Profile"
+              className="profile-pic"
+            />
+            <input type="file" accept="image/*" onChange={handleProfilePicChange} />
+          </div>
+        </div>
 
-        {/* Additional Sections (e.g., Personal Details, Address, Company) can follow the same pattern */}
-        {/* Snackbar for save confirmation */}
-        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-          <Alert onClose={() => setOpenSnackbar(false)} severity="success">
-            Changes saved successfully!
-          </Alert>
-        </Snackbar>
-      </Grid>
-    </Grid>
+        <div className="info-section">
+          <h2>Student Information</h2>
+
+          <label htmlFor="studentID">Student ID</label>
+          <input
+            type="text"
+            id="studentID"
+            value={studentID}
+            onChange={handleStudentIDChange}
+            disabled // Disable editing for Student ID
+          />
+
+          <label htmlFor="admissionNo">Admission Number</label>
+          <input
+            type="text"
+            id="admissionNo"
+            value={admissionNo}
+            onChange={handleAdmissionNoChange}
+            disabled // Disable editing for Admission Number
+          />
+
+          <label htmlFor="address">Address</label>
+          <input
+            type="text"
+            id="address"
+            value={address}
+            onChange={handleAddressChange}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 
