@@ -35,7 +35,7 @@
 }
 
 .header .logo:hover{
-  color: #1a9516;
+  transform: scale(1.05);
   cursor: pointer;
 }
 

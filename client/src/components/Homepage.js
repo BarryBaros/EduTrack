@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import emailjs from 'emailjs-com';
 
 function Homepage(){
 
@@ -10,6 +10,47 @@ function Homepage(){
       
       navigate('/login'); 
     };
+
+    const sendAutoReply = (form) => {
+        const userEmail = form.email.value; 
+        const templateParams = {
+            email: userEmail,
+            message: form.message.value, 
+        };
+    
+        console.log("Sending auto-reply to:", userEmail); 
+    
+        emailjs.send('service_uhqjhub', 'template_j88z9jf', templateParams, 'ytAUD_1PbK-8tfe77')
+        .then((result) => {
+            console.log("Auto-reply sent:", result.text);
+        }, (error) => {
+            console.error("Error in sending auto-reply:", error);
+        });
+    };
+
+    const sendEmail = (e) => {
+        e.preventDefault();
+        
+        emailjs.sendForm('service_uhqjhub', 'template_xbt2fij', e.target, 'ytAUD_1PbK-8tfe77')
+        .then((result) => {
+            console.log("Message sent to EduTrack:", result.text);
+    
+            alert("Message sent successfully!");
+            sendAutoReply(e.target);
+            e.target.reset(); 
+        }, (error) => {
+            console.error("Error sending email:", error);
+            alert("An error occurred while sending the message. Please try again.");
+        });
+        
+        
+    };
+
+    
+   
+    
+
+  
     return (
             < div className="app">
 
@@ -61,25 +102,12 @@ function Homepage(){
                                 </p>
 
                            </div>
-                        <form
-                            className='contact-form'
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                const email = e.target[0].value;  // Getting the email input
-                                const message = e.target[1].value; // Getting the textarea input
-                                const mailtoLink = `mailto:mmegaway1995@gmail.com?subject=Join%20EduTrack&body=From:%20${email}%0D%0A%0D%0A${encodeURIComponent(message)}`;
-
-                                // Redirect to the mailto link
-                                window.location.href = mailtoLink;
-                            }}
-                            >
-                        
-                            <h3>Get In Touch</h3>
-                            <input type='email' placeholder='Email' required/>
-                            <textarea placeholder='Tell us why you want to join...' required/>
-                            <button type='submit'>Join Now</button>
-                    </form>
-
+                           <form className='contact-form' onSubmit={sendEmail}>
+                                <h3>Get In Touch</h3>
+                                <input type='email' name='email' placeholder='Email' required/>
+                                <textarea name='message' placeholder='Tell us why you want to join...' required/>
+                                <button type='submit'>Join Now</button>
+                            </form>
                         </div>
                     </section>
                 </main>
@@ -94,7 +122,7 @@ function Homepage(){
                         <div className='newsletter'>
                             <h3>Subscribe to Our Newsletter</h3>
                             <form className='newsletter-form'>
-                                <input type='email' placeholder='Enter your Email Here'></input>
+                                <input type='email' name='email' placeholder='Enter your Email Here'></input>
                                 <button type='submit'>Subscribe Now</button>
                             </form>
                         </div>
