@@ -1,95 +1,32 @@
-// src/pages/Students.js
 import React, { useEffect, useState } from 'react';
-import '../components/StudentProfile.css'; // Assuming this file contains your custom styles
+import { Avatar, Typography } from '@mui/material';
 
 const Students = () => {
-  // State to store the profile picture
   const [profilePic, setProfilePic] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    guardian_email: ''
+  });
 
-  // Fetch the profile picture from localStorage when the component loads
   useEffect(() => {
-    const storedPic = localStorage.getItem('profilePic');
-    if (storedPic) {
-      setProfilePic(storedPic);
+    const savedProfilePic = localStorage.getItem('profilePic');
+    const savedFormData = JSON.parse(localStorage.getItem('formData'));
+
+    if (savedProfilePic) {
+      setProfilePic(savedProfilePic);
+    }
+
+    if (savedFormData) {
+      setFormData(savedFormData);
     }
   }, []);
 
-  // Dynamic data for student profile
-  const studentData = {
-    name: 'John Doe',
-    admissionNo: 'ADM001',
-    class: '10A',
-    grades: [
-      { subject: 'Math', marks: '95/100', grade: 'A' },
-      { subject: 'English', marks: '88/100', grade: 'B+' },
-      { subject: 'Physics', marks: '92/100', grade: 'A-' },
-      { subject: 'Chemistry', marks: '85/100', grade: 'B' },
-      { subject: 'Computer', marks: '78/100', grade: 'B' },
-    ],
-    totalMarks: '438/500',
-    percentage: '87%',
-    attendance: '100%',
-  };
-
   return (
-    <div className="student-page">
-      <h1>Student Profile</h1>
-
-      <div className="student-profile">
-        {/* Profile Header */}
-        <div className="profile-header">
-          <div className="profile-picture">
-            <img
-              src={profilePic || 'https://via.placeholder.com/150'} // Default image if none uploaded
-              alt="Profile"
-              className="profile-pic"
-            />
-          </div>
-          <div className="student-info">
-            <h3>{studentData.name}</h3>
-            <p>Admission No: {studentData.admissionNo}</p>
-            <p>Class: {studentData.class}</p>
-          </div>
-        </div>
-
-        {/* Grades and Attendance Section */}
-        <div className="grades-section">
-          {/* Grades */}
-          <div className="grades-card">
-            <h4>Grades & Marks</h4>
-            <table>
-              <thead>
-                <tr>
-                  <th>Subject</th>
-                  <th>Marks</th>
-                  <th>Grade</th>
-                </tr>
-              </thead>
-              <tbody>
-                {studentData.grades.map((grade, index) => (
-                  <tr key={index}>
-                    <td>{grade.subject}</td>
-                    <td>{grade.marks}</td>
-                    <td>{grade.grade}</td>
-                  </tr>
-                ))}
-                <tr>
-                  <td><b>Total:</b></td>
-                  <td><b>{studentData.totalMarks}</b></td>
-                  <td><b>{studentData.percentage}</b></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          {/* Attendance */}
-          <div className="attendance-card">
-            <h4>Attendance</h4>
-            <div className="attendance-circle">
-              <span>{studentData.attendance}</span>
-            </div>
-          </div>
-        </div>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Avatar src={profilePic} sx={{ width: 50, height: 50 }} />
+      <div style={{ marginLeft: '1rem' }}>
+        <Typography variant="h6">{formData.name}</Typography>
+        <Typography variant="body2">{formData.guardian_email}</Typography>
       </div>
     </div>
   );
