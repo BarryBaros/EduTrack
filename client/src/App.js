@@ -1,11 +1,11 @@
 // src/App.js
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
-import Dashboard from './pages/Dashboard';
-import Students from './pages/Students';
-import Classes from './pages/Classes';
-import Settings from './pages/Settings';
+import Sidebar from './components/Sidebarpg';
+import Dashboard from './components/Dashboard';
+import Students from './components/Students';
+import Classes from './components/Classes';
+import Settings from './components/Settings';
 import './App.css';
 
 function App() {

@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaHome, FaUserGraduate, FaClipboardList, FaCogs } from 'react-icons/fa';
-import './Sidebar.css';
+import './Sidebarpg.css';
 
 function Sidebar({ isVisible }) {
   return (

@@ -1,12 +1,12 @@
 /* src/pages/Classes.css */
 
-.classes-page {
+.custom-classes-page {
   padding: 2rem;
   font-family: 'Roboto', sans-serif;
   background-color: #f5f6fa;
 }
 
-.page-title {
+.custom-page-title {
   font-size: 2.5rem;
   color: #2c3e50;
   font-weight: bold;
@@ -14,7 +14,7 @@
   margin-bottom: 0.5rem;
 }
 
-.page-subtitle {
+.custom-page-subtitle {
   font-size: 1.2rem;
   color: #7f8c8d;
   text-align: center;
@@ -22,14 +22,14 @@
 }
 
 /* Controls Section */
-.controls {
+.custom-controls {
   display: flex;
   justify-content: space-between;
   margin: 2rem 0;
   flex-wrap: wrap;
 }
 
-.search-bar {
+.custom-search-bar {
   flex: 1;
   padding: 0.75rem 1rem;
   margin-right: 1rem;
@@ -39,20 +39,20 @@
   transition: border-color 0.3s ease;
 }
 
-.search-bar:focus {
+.custom-search-bar:focus {
   border-color: #3498db;
   outline: none;
   box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
 }
 
-.filter-sort {
+.custom-filter-sort {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
 }
 
-.filter-select,
-.sort-select {
+.custom-filter-select,
+.custom-sort-select {
   padding: 0.75rem 1rem;
   border: 1px solid #bdc3c7;
   border-radius: 8px;
@@ -61,20 +61,20 @@
   transition: border-color 0.3s ease;
 }
 
-.filter-select:hover,
-.sort-select:hover {
+.custom-filter-select:hover,
+.custom-sort-select:hover {
   border-color: #3498db;
 }
 
 /* Classes List */
-.classes-list {
+.custom-classes-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
 }
 
 /* Class Card Styling */
-.class-card {
+.custom-class-card {
   background-color: #ffffff;
   border-radius: 12px;
   padding: 1.5rem;
@@ -82,34 +82,34 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.class-card:hover {
+.custom-class-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-.class-header h3 {
+.custom-class-header h3 {
   font-size: 1.75rem;
   color: #2c3e50;
   margin-bottom: 0.5rem;
   font-weight: 600;
 }
 
-.class-header p {
+.custom-class-header p {
   font-size: 1rem;
   color: #95a5a6;
 }
 
-.class-info {
+.custom-class-info {
   margin-top: 1rem;
 }
 
-.class-info p {
+.custom-class-info p {
   font-size: 1rem;
   color: #7f8c8d;
 }
 
 /* No Classes Message */
-.no-classes {
+.custom-no-classes {
   font-size: 1.25rem;
   color: #95a5a6;
   text-align: center;
@@ -118,25 +118,25 @@
 
 /* Responsive Design for Mobile */
 @media (max-width: 768px) {
-  .page-title {
+  .custom-page-title {
     font-size: 2rem;
   }
 
-  .page-subtitle {
+  .custom-page-subtitle {
     font-size: 1rem;
   }
 
-  .controls {
+  .custom-controls {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .search-bar {
+  .custom-search-bar {
     margin-right: 0;
     margin-bottom: 1rem;
   }
 
-  .filter-sort {
+  .custom-filter-sort {
     flex-direction: column;
     gap: 0.75rem;
   }
