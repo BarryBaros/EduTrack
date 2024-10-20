@@ -58,6 +58,7 @@ const Settings = () => {
       reader.onload = (e) => {
         setProfilePic(e.target.result); // Set base64 image as profilePic
         localStorage.setItem('profilePic', e.target.result); // Save to localStorage
+        setOpenSnackbar(true); // Show success message
       };
       reader.readAsDataURL(file);
     }
@@ -83,6 +84,13 @@ const Settings = () => {
     setEditing({ ...editing, [section]: false });
   };
 
+  // Handle removing profile picture
+  const handleRemoveProfilePic = () => {
+    setProfilePic(null);
+    localStorage.removeItem('profilePic'); // Remove from localStorage
+    setOpenSnackbar(true); // Show success message
+  };
+
   return (
     <Grid container spacing={3} justifyContent="center" style={{ padding: '2rem' }}>
       <Grid item xs={12} sm={10} md={8}>
@@ -103,6 +111,20 @@ const Settings = () => {
                   <PhotoCamera />
                 </IconButton>
               </label>
+
+              {/* Save and Remove Buttons for Profile Picture */}
+              {profilePic && (
+                <>
+                  <Button
+                    onClick={handleRemoveProfilePic}
+                    variant="outlined"
+                    color="secondary"
+                    style={{ marginTop: '1rem' }}
+                  >
+                    Remove Picture
+                  </Button>
+                </>
+              )}
             </Grid>
             <Grid item xs={12} sm={8}>
               <Typography variant="h5">{formData.name}</Typography>
@@ -307,10 +329,10 @@ const Settings = () => {
           </CardContent>
         </Card>
 
-        {/* Snackbar for feedback */}
+        {/* Snackbar Notification */}
         <Snackbar
           open={openSnackbar}
-          autoHideDuration={3000}
+          autoHideDuration={6000}
           onClose={() => setOpenSnackbar(false)}
         >
           <Alert onClose={() => setOpenSnackbar(false)} severity="success">
