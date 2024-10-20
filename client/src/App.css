@@ -1,38 +1,311 @@
-.App {
+.app{
+
+  font-family: 'Inria Serif', serif;
+  font-weight: 200;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+
+.main-content-1{
+  padding: 1px;
+  width: 100%;
+  flex-grow: 1;
+  
+}
+
+.header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #ffffff99;
+  color: #333;
+  margin-top: 10px;
+
+}
+
+.header .logo{
+  font-size: 1.5rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  color: #333;
+}
+
+.header .logo:hover{
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.header .logo img {
+  margin-right: 10px; 
+  height: 40px; 
+}
+
+.header nav {
+  display: flex;
+  align-items: center; 
+}
+
+.header nav img {
+  margin-right: 10px; 
+  height: 30px; 
+  
+}
+
+
+
+.header nav .logout-btn {
+  background-color: none; 
+  border: none;
+  color: #333;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: #ffffff99;
+}
+
+.header nav .logout-btn:hover {
+  background-color: #555;
+   color: #fff;
+}
+
+.hero{
   text-align: center;
+  padding: 30px;
+  background-color: #ffffffa8;
+  height: 75vh;
+  margin-top: 50px;
+  margin-bottom: 20px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.hero h1{
+  font-size: 5.0rem;
+  margin-bottom: 20px;
+  color: #313131;
+  font-weight: 500;
+
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.hero p{
+  font-size: 2rem;
+  color: #313131;
+}
+.typewriter {
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 1px solid;
+  display: inline-block;
+  width: 0;
+  animation: typing 8s steps(40, end), blink-caret 0.75s step-end infinite;
+  animation-iteration-count: infinite;
+  color: #313131;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+@keyframes blink-caret {
+  from, to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: black;
+  }
+}
+
+
+.goals{
+  padding: 30px;
+  background-color: #4a4a4a;
+  margin-top: 80px;
+  font-family: 'Inria Serif', serif;
+  
+}
+
+.goals h2{
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #f1f1f1;
+  font-size: 3.1 rem;
+}
+.goals ul{
+  list-style: none;
+  padding: 0;
+  
+}
+.goals ul li{
+  font-size: 1.4rem;
+  color: #333;
+  margin-bottom: 10px;
+  color: #f1f1f1;
+  text-align: center;
+}
+.join {
+  padding: 20px; 
+  background-color: #f9f9f9; 
+  margin-top: 20px;
+}
+
+.join-context {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: flex-start; 
+}
+
+.join-text {
+  flex: 1; 
+  padding-right: 20px; 
+}
+
+.join-text p{
+  font-size: 1.1 rem;
+  color: #333;
+  
+}
+
+.join-text h2{
+  font-size: 2rem;
+  margin-bottom: 20px;
+ 
+}
+
+.join h2{
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+.join p{
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+.contact-form {
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
+}
+
+.contact-form h3{
+  font-size: 1.2 rem;
+  margin-bottom: 10px;
+  
+}
+
+.contact-form input,
+.contact-form textarea {
+    margin-bottom: 10px; 
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+}
+
+.contact-form button {
+  padding: 10px; 
+  background-color: #007bff;
+  color: white; 
+  border: none; 
+  border-radius: 5px; 
+  cursor: pointer; 
+}
+
+
+.contact-form button:hover{
+  background-color: #c9c9c9;
+  color: #313131;
+
+}
+footer{
+  background-color: #4a4a4a;
+  color: #fff;
+  padding: 10px 20px;
+}
+.footer-top{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-top .contact-info{
+  max-width: 50%;
+}
+
+.footer-top .contact-info p a{
+  color: #f9f9f9;
+}
+
+.footer-top .contact-info h3,
+.footer-top .newsletter h3{
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.footer-top .newsletter{
+  max-width: 50%;
+}
+
+.footer-top .newsletter-form{
+  display: flex;
+  gap: 10px;
+}
+.footer-top .newsletter-form input{
+  padding: 8px;
+  font-size: 0.8rem;
+  border-radius: 0.3rem;
+}
+
+.footer-top .newsletter-form button{
+  padding: 8px 10px;
+  background-color: #007bff; 
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  border-radius: 0.3rem;
+  font-size: 0.8rem;
+  
+}
+
+
+.footer-top .newsletter-form button:hover{
+  background-color: #fff;
+  color: #313131;
+}
+
+
+.footer-bottom {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  text-align: center;
 }
 
-.App-link {
-  color: #61dafb;
+.footer-bottom ul {
+  display: flex; 
+  padding: 0;
+  margin: 0;
+  list-style: none; 
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.footer-bottom ul li {
+  margin: 0 10px; 
+}
+
+.footer-bottom ul li a img {
+  width: 20px; 
+  height: 20px;
+}
+
+.footer-bottom p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #fff;
 }
