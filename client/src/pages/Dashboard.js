@@ -1,5 +1,5 @@
 // src/pages/Dashboard.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Card, CardContent, Typography, Avatar, CircularProgress, Box, Divider, List, ListItem, ListItemText } from '@mui/material';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -7,40 +7,56 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-// Sample student data
-const studentData = {
-  name: 'John Doe',
-  class: '10A',
-  admissionNo: 'ADM001',
-  profilePic: localStorage.getItem('profilePic') || 'https://via.placeholder.com/150',
-  attendance: 95,
-  grades: [
-    { subject: 'Math', marks: 95, grade: 'A' },
-    { subject: 'English', marks: 88, grade: 'B+' },
-    { subject: 'Physics', marks: 92, grade: 'A-' },
-    { subject: 'Chemistry', marks: 85, grade: 'B' },
-    { subject: 'Computer', marks: 78, grade: 'B' },
-  ],
-  upcomingEvents: [
-    { event: 'Math Exam', date: 'Oct 20, 2024' },
-    { event: 'Science Project Submission', date: 'Oct 25, 2024' },
-    { event: 'Parent-Teacher Meeting', date: 'Nov 1, 2024' },
-  ],
-};
-
-// Chart.js data for grades
-const gradeData = {
-  labels: studentData.grades.map((grade) => grade.subject),
-  datasets: [
-    {
-      label: 'Marks',
-      data: studentData.grades.map((grade) => grade.marks),
-      backgroundColor: '#3498db',
-    },
-  ],
-};
-
 const Dashboard = () => {
+  const [profilePic, setProfilePic] = useState(localStorage.getItem('profilePic') || 'https://via.placeholder.com/150');
+
+  // Sample student data (excluding profilePic)
+  const studentData = {
+    name: 'John Doe',
+    class: '10A',
+    admissionNo: 'ADM001',
+    attendance: 95,
+    grades: [
+      { subject: 'Math', marks: 95, grade: 'A' },
+      { subject: 'English', marks: 88, grade: 'B+' },
+      { subject: 'Physics', marks: 92, grade: 'A-' },
+      { subject: 'Chemistry', marks: 85, grade: 'B' },
+      { subject: 'Computer', marks: 78, grade: 'B' },
+    ],
+    upcomingEvents: [
+      { event: 'Math Exam', date: 'Oct 20, 2024' },
+      { event: 'Science Project Submission', date: 'Oct 25, 2024' },
+      { event: 'Parent-Teacher Meeting', date: 'Nov 1, 2024' },
+    ],
+  };
+
+  // Chart.js data for grades
+  const gradeData = {
+    labels: studentData.grades.map((grade) => grade.subject),
+    datasets: [
+      {
+        label: 'Marks',
+        data: studentData.grades.map((grade) => grade.marks),
+        backgroundColor: '#3498db',
+      },
+    ],
+  };
+
+  // Effect to listen for profile picture changes in localStorage
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const updatedProfilePic = localStorage.getItem('profilePic');
+      if (updatedProfilePic) {
+        setProfilePic(updatedProfilePic); // Update the profile pic when it changes in localStorage
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange); // Listen to changes in localStorage
+    return () => {
+      window.removeEventListener('storage', handleStorageChange); // Clean up listener on component unmount
+    };
+  }, []);
+
   return (
     <div style={{ padding: '2rem', backgroundColor: '#f5f6fa' }}>
       {/* Dashboard Header */}
@@ -58,7 +74,7 @@ const Dashboard = () => {
             <CardContent>
               <Grid container spacing={2} alignItems="center">
                 <Grid item>
-                  <Avatar src={studentData.profilePic} sx={{ width: 80, height: 80 }} />
+                  <Avatar src={profilePic} sx={{ width: 80, height: 80 }} />
                 </Grid>
                 <Grid item>
                   <Typography variant="h5">{studentData.name}</Typography>

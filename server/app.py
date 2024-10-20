@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, redirect, url_for, render_template, flash, session
 from flask_migrate import Migrate
 from flask_cors import CORS
-from .models import db, Admin, Teacher, Student, Subject, Class, Grade
+from models import db, Admin, Teacher, Student, Subject, Class, Grade
 from datetime import datetime
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from dotenv import load_dotenv
