@@ -63,7 +63,7 @@ const Classes = () => {
       </Button>
 
       <Typography variant="h3" align="center" gutterBottom>
-        High School Classes
+         Classes
       </Typography>
       <Typography variant="subtitle1" align="center" gutterBottom>
         Browse and manage your school’s classes.
