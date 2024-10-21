@@ -49,41 +49,41 @@ function TeachersPage({
 
   const navigate = useNavigate(); // Initialize the navigate function
 
+//   const handleSearch = async () => {
+//     try {
+//         const response = await fetch(`http://127.0.0.1:5555/students/name/${student}`);
+//         if (!response.ok) {
+//             throw new Error('Network response was not ok');
+//         }
+//         const data = await response.json();
+        // Handle the student data as needed
+//     } catch (error) {
+//         console.error('Error fetching student:', error);
+//     }
+// };
+  
   const handleSearch = async () => {
     try {
-        const response = await fetch(`http://127.0.0.1:5555/students/name/${student}`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        // Handle the student data as needed
+      const response = await fetch(`http://127.0.0.1:5555/students/name/${student}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      console.log(data); // Log the data returned from the server
+  
+      if (data && data.name && data.name.toLowerCase() === student.toLowerCase()) {
+        setSearchStatus("Successful");
+        alert(`Student ${data.name} found!`);
+      } else {
+        setSearchStatus("Student not found");
+        alert("Student not found! Please check the admission number.");
+      }
     } catch (error) {
-        console.error('Error fetching student:', error);
+      console.error("Error fetching student:", error);
+      setSearchStatus("Error fetching student data");
+      alert("An error occurred while fetching student data.");
     }
-};
-  
-  // const handleSearch = async () => {
-  //   try {
-  //     const response = await fetch(`http://127.0.0.1:5555/students/name/${student}`);
-  //     if (!response.ok) {
-  //       throw new Error("Network response was not ok");
-  //     }
-  //     const data = await response.json();
-  //     console.log(data); // Log the data returned from the server
-  
-  //     if (data && data.name && data.name.toLowerCase() === student.toLowerCase()) {
-  //       setSearchStatus("Successful");
-  //       alert(`Student ${data.name} found!`);
-  //     } else {
-  //       setSearchStatus("Student not found");
-  //       alert("Student not found! Please check the admission number.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching student:", error);
-  //     setSearchStatus("Error fetching student data");
-  //     alert("An error occurred while fetching student data.");
-  //   }
-  // };  
+  };  
 
   const handleMarksChange = (subject, e) => {
     setMarks({ ...marks, [subject]: e.target.value });
@@ -139,6 +139,9 @@ function TeachersPage({
       setMarks({});
       setRemarks({});
       setSearchStatus("");
+  
+      // Redirect to Students page after saving marks
+      navigate("/students");
     } catch (error) {
       console.error("Error saving marks:", error);
       alert("An error occurred while saving marks.");
