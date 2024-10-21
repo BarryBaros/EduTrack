@@ -15,6 +15,8 @@ function TeachersPage({
   const [searchStatus, setSearchStatus] = useState("");
   const [notification, setNotification] = useState("");
   const [selectedYear, setSelectedYear] = useState("2010");
+  const [searchedStudentName, setSearchedStudentName] = useState("");
+
 
   // Attendance state
   const [attendance, setAttendance] = useState({
@@ -48,19 +50,6 @@ function TeachersPage({
   const years = ["2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"];
 
   const navigate = useNavigate(); // Initialize the navigate function
-
-//   const handleSearch = async () => {
-//     try {
-//         const response = await fetch(`http://127.0.0.1:5555/students/name/${student}`);
-//         if (!response.ok) {
-//             throw new Error('Network response was not ok');
-//         }
-//         const data = await response.json();
-        // Handle the student data as needed
-//     } catch (error) {
-//         console.error('Error fetching student:', error);
-//     }
-// };
   
   const handleSearch = async () => {
     try {
@@ -72,12 +61,14 @@ function TeachersPage({
       console.log(data); // Log the data returned from the server
   
       if (data && data.name && data.name.toLowerCase() === student.toLowerCase()) {
+        setSearchedStudentName(data.name); // Set the searched student's name
         setSearchStatus("Successful");
-        alert(`Student ${data.name} found!`);
+        // alert(`Student ${data.name} found!`);
       } else {
         setSearchStatus("Student not found");
         alert("Student not found! Please check the admission number.");
       }
+      
     } catch (error) {
       console.error("Error fetching student:", error);
       setSearchStatus("Error fetching student data");
@@ -238,8 +229,9 @@ function TeachersPage({
         </div>
 
         {searchStatus === "Successful" && (
-          <div className="student-name"> {studentName}</div>
-        )}
+  <div className="student-name"> {searchedStudentName}</div>
+)}
+
 
         <h2>Select Class</h2>
         <select

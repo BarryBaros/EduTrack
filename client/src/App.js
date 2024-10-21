@@ -11,6 +11,12 @@ import Sidebar from './components/Sidebar';
 import AdminDashboard from './components/AdminDashboard';
 import AddTeacher from './components/AddTeacher';
 import AddStudent from './components/AddStudent';
+import Sidebarpg from './components/Sidebarpg';
+import Dashboard from './components/Dashboard';
+import Students from './components/Students';
+import Classes from './components/Classes';
+import Settings from './components/Settings';
+import './App.css';
 
 
 const App = () => {
@@ -33,7 +39,12 @@ const App = () => {
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/admin/add-teacher" element={<AddTeacher />} />
                 <Route path="/admin/add-student" element={<AddStudent />} />
-            </Routes>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/students" element={<Students />} />
+                <Route path="/classes" element={<Classes />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/sidebarpg" element={<Sidebarpg />} />
+                </Routes>
         </Router>
     );
 };

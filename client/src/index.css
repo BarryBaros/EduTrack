@@ -4,7 +4,7 @@
   height: 100vh; 
 }
 
-.sidebar {
+.sidebar1 {
   width: 200px; 
   background-color: #4CAF50; 
   padding: 15px; 
@@ -16,7 +16,7 @@
   position: relative; 
 }
 
-.sidebar ul li {
+.sidebar1 ul li {
   margin: 20px 0;
   cursor: pointer;
   padding: 10px; /* Add padding for better click area */
@@ -24,7 +24,7 @@
 }
 
 /* Hover effect for list items */
-.sidebar ul li:hover {
+.sidebar1 ul li:hover {
   background-color: #a0d9a0;
 }
 
@@ -41,6 +41,7 @@
   align-items: center;
   padding: 0 0 20px 0; 
   border-bottom: 2px solid #4CAF50; 
+  font-weight: 100px;
 }
 
 .logout-container {

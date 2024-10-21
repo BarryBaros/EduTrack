@@ -1,43 +1,114 @@
 // src/pages/Students.js
-import React, { useEffect, useState } from "react";
-import { Button } from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout"; // Import the logout icon
-import "../components/StudentProfile.css"; // Assuming this file contains your custom styles
+import React, { useEffect, useState } from 'react';
+import { Button } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout'; // Import the logout icon
+import '../components/StudentProfile.css'; // Assuming this file contains your custom styles
 
 const Students = () => {
   // State to store the profile picture
   const [profilePic, setProfilePic] = useState(null);
-  const [studentsData, setStudentsData] = useState([]); // State to store student data
 
-  // Fetch student data including marks from the backend
+  // Fetch the profile picture from localStorage when the component loads
   useEffect(() => {
-    const fetchStudentData = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5555/students"); // Modify this to your backend URL
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setStudentsData(data); // Set the student data including marks
-      } catch (error) {
-        console.error("Error fetching student data:", error);
-      }
-    };
+    const storedPic = localStorage.getItem('profilePic');
+    if (storedPic) {
+      setProfilePic(storedPic);
+    }
+  }, []);
 
-    fetchStudentData(); // Call the function to fetch data when the component mounts
-  }, []); // Empty dependency array to run this effect only once when the component mounts
+  // Dynamic data for student profile
+  const studentData = {
+    name: 'John Doe',
+    admissionNo: 'ADM001',
+    class: '10A',
+    grades: [
+      { subject: 'Math', marks: '95/100', grade: 'A' },
+      { subject: 'English', marks: '88/100', grade: 'B+' },
+      { subject: 'Physics', marks: '92/100', grade: 'A-' },
+      { subject: 'Chemistry', marks: '85/100', grade: 'B' },
+      { subject: 'Computer', marks: '78/100', grade: 'B' },
+    ],
+    totalMarks: '438/500',
+    percentage: '87%',
+    attendance: '100%',
+  };
+
+  // Logout handler (can be hooked to authentication logic)
+  const handleLogout = () => {
+    alert('You have logged out!');
+    // Add your logout logic here (e.g., clearing session, redirecting to login page)
+  };
 
   return (
-    <div className="students-page">
-      <h1>Students Page</h1>
-      <ul>
-        {studentsData.map((student) => (
-          <li key={student.id}>
-            <h2>{student.name}</h2>
-            <p>Marks: {JSON.stringify(student.marks)}</p>
-          </li>
-        ))}
-      </ul>
+    <div className="student-page">
+      {/* Logout Button */}
+      <Button
+        color="inherit"
+        onClick={handleLogout}
+        style={{ position: 'absolute', top: '20px', right: '20px', fontSize: '1rem', textTransform: 'none' }}
+        startIcon={<LogoutIcon style={{ fontSize: '1.5rem' }} />} // Adding icon next to text
+      >
+        Logout
+      </Button>
+
+      <h1>Student</h1>
+
+      <div className="student-profile">
+        {/* Profile Header */}
+        <div className="profile-header">
+          <div className="profile-picture">
+            <img
+              src={profilePic || 'https://via.placeholder.com/150'} // Default image if none uploaded
+              alt="Profile"
+              className="profile-pic"
+            />
+          </div>
+          <div className="student-info">
+            <h3>{studentData.name}</h3>
+            <p>Admission No: {studentData.admissionNo}</p>
+            <p>Class: {studentData.class}</p>
+          </div>
+        </div>
+
+        {/* Grades and Attendance Section */}
+        <div className="grades-section">
+          {/* Grades */}
+          <div className="grades-card">
+            <h4>Grades & Marks</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Marks</th>
+                  <th>Grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                {studentData.grades.map((grade, index) => (
+                  <tr key={index}>
+                    <td>{grade.subject}</td>
+                    <td>{grade.marks}</td>
+                    <td>{grade.grade}</td>
+                  </tr>
+                ))}
+                <tr>
+                  <td><b>Total:</b></td>
+                  <td><b>{studentData.totalMarks}</b></td>
+                  <td><b>{studentData.percentage}</b></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Attendance */}
+          <div className="attendance-card">
+            <h4>Attendance</h4>
+            <div className="attendance-circle">
+              <span>{studentData.attendance}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
