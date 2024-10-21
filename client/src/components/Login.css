@@ -19,7 +19,7 @@ label{
   box-sizing: border-box;
   width:400px;
   margin:100px auto;
-  background-color:#05192d;
+  background-color:#4CAF50;
   padding:10px;
   border-radius: 20px;
   text-align-last: center;
@@ -88,8 +88,8 @@ background-color: black;
   padding: 10px;
   border: none;
   outline:none;
-  color:#05192d;
+  color:white;
   font-weight:700;
   font-size:16px;
-  background-color: #03ef62;
+  background-color: black;
 }

@@ -190,7 +190,7 @@ function TeachersPage({
       {/* Notification Pop-up */}
       {notification && <div className="notification-popup">{notification}</div>}
 
-      <div className="sidebar">
+      <div className="sidebar1">
         <div className="menu-toggle" onClick={toggleMenu}>
           {menuVisible ? <i class="bx bx-x"></i> : <i class="bx bx-menu"></i>}
         </div>
@@ -199,8 +199,8 @@ function TeachersPage({
             <li onClick={() => navigateTo("/")}>Home</li>
             <li onClick={() => navigateTo("/about")}>About</li>
             <li onClick={() => navigateTo("/teachers")}>Teachers</li>
-            <li onClick={() => navigateTo("/students-report")}>
-              Students Report
+            <li onClick={() => navigateTo("/students")}>
+              Students
             </li>
             <li onClick={() => navigateTo("/attendance-report")}>
               Attendance-report
