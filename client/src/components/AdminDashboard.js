@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AddTeacher from './AddTeacher';
 import AddStudent from './AddStudent';
+import AddSubject from './AddSubject';
 import Sidebar from './Sidebar';
 import AddClass from './AddClass';
 
@@ -28,10 +29,20 @@ const AdminDashboard = () => {
         setClasses(data);
     };
 
+    const fetchSubjects = async () => {
+        const response = await fetch('http://127.0.0.1:5555/subjects');
+        const data = await response.json();
+        setClasses(data);
+    };
+
+
+    
+
     useEffect(() => {
         fetchTeachers();
         fetchStudents();
         fetchClasses();
+        fetchSubjects();
     }, []);
 
     return (
@@ -60,6 +71,14 @@ const AdminDashboard = () => {
                 <h1 className="text-green-700 font-bold text-xl mb-4">Classes</h1>
         
                      <AddClass fetchClasses={fetchClasses} />
+                
+            </div>
+
+            {/* Subject Section */}
+            <div className="md:w-1/2 p-4 bg-white rounded-lg shadow-md">
+                <h1 className="text-green-700 font-bold text-xl mb-4">Subjects</h1>
+        
+                     <AddSubject fetchClasses={fetchSubjects} />
                 
             </div>
         </div>

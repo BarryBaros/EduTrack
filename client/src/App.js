@@ -17,10 +17,7 @@ import Students from './components/Students';
 import Classes from './components/Classes';
 import Settings from './components/Settings';
 import './App.css';
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Homepage from './components/Homepage';
-import Login from './components/Login';
+
 
 
 const App = () => {
