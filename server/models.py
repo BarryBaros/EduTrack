@@ -4,6 +4,7 @@ from sqlalchemy_serializer import SerializerMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import MetaData
 
+# MetaData for consistency in db schema
 metadata = MetaData()
 db = SQLAlchemy(metadata=metadata)
 
@@ -16,11 +17,9 @@ class Admin(db.Model, SerializerMixin):
     admin_name = db.Column(db.String(50), nullable=False)
     pin_no_hash = db.Column(db.String(128), nullable=False)
 
-    # Hash the pin_no when setting
     def set_pin_no(self, pin_no):
         self.pin_no_hash = generate_password_hash(pin_no)
 
-    # Verify pin_no
     def check_pin_no(self, pin_no):
         return check_password_hash(self.pin_no_hash, pin_no)
 
@@ -31,7 +30,6 @@ class Admin(db.Model, SerializerMixin):
             'admin_name': self.admin_name
         }
 
-
 # Teacher Model
 class Teacher(db.Model, SerializerMixin):
     __tablename__ = 'teachers'
@@ -41,11 +39,9 @@ class Teacher(db.Model, SerializerMixin):
     pin_no_hash = db.Column(db.String(128), nullable=False)
     name = db.Column(db.String(50), nullable=False)
 
-    # Hash the pin_no when setting
     def set_pin_no(self, pin_no):
         self.pin_no_hash = generate_password_hash(pin_no)
 
-    # Verify pin_no
     def check_pin_no(self, pin_no):
         return check_password_hash(self.pin_no_hash, pin_no)
 
@@ -56,7 +52,6 @@ class Teacher(db.Model, SerializerMixin):
             'name': self.name
         }
 
-
 # Class Model
 class Class(db.Model, SerializerMixin):
     __tablename__ = 'classes'
@@ -66,7 +61,6 @@ class Class(db.Model, SerializerMixin):
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=False)
     class_capacity = db.Column(db.Integer, nullable=False)
 
-    # Relationship to Teacher
     teacher = db.relationship('Teacher', backref='classes', lazy=True)
 
     def to_dict(self):
@@ -76,7 +70,6 @@ class Class(db.Model, SerializerMixin):
             'teacher_id': self.teacher_id,
             'class_capacity': self.class_capacity
         }
-
 
 # Student Model
 class Student(db.Model, SerializerMixin):
@@ -93,18 +86,14 @@ class Student(db.Model, SerializerMixin):
     guardian_name = db.Column(db.String(50), nullable=False)
     guardian_contact = db.Column(db.String(20), nullable=False)
     guardian_email = db.Column(db.String(50), nullable=False)
+    image = db.Column(db.String(255))
 
-    # Relationship to Class
     class_ = db.relationship('Class', backref='students', lazy=True)
-
-    # Many-to-many relationship to Subjects via Grade
     grades = db.relationship('Grade', backref='student', lazy=True)
 
-    # Hash the pin_no when setting
     def set_pin_no(self, pin_no):
         self.pin_no_hash = generate_password_hash(pin_no)
 
-    # Verify pin_no
     def check_pin_no(self, pin_no):
         return check_password_hash(self.pin_no_hash, pin_no)
 
@@ -122,7 +111,6 @@ class Student(db.Model, SerializerMixin):
             'guardian_email': self.guardian_email
         }
 
-
 # Subject Model
 class Subject(db.Model, SerializerMixin):
     __tablename__ = 'subjects'
@@ -130,7 +118,6 @@ class Subject(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
 
-    # One-to-many relationship to Grades
     grades = db.relationship('Grade', backref='subject', lazy=True)
 
     def to_dict(self):
@@ -139,7 +126,6 @@ class Subject(db.Model, SerializerMixin):
             'name': self.name
         }
 
-
 # Grade Model (for individual grades per student per subject)
 class Grade(db.Model, SerializerMixin):
     __tablename__ = 'grades'
@@ -147,7 +133,7 @@ class Grade(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), nullable=False)
-    grade = db.Column(db.String(2))  # Example: 'A', 'B', etc.
+    grade = db.Column(db.String(2))
 
     def to_dict(self):
         return {
