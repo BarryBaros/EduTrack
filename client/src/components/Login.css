@@ -1,0 +1,95 @@
+*{
+  font-family:Studio Feixen Sans;
+}
+
+.nameh1{
+  color:white;
+}
+
+.login-as{
+  color:white;
+}
+
+label{
+  color:white;
+ 
+}
+
+.my-login-container{
+  box-sizing: border-box;
+  width:400px;
+  margin:100px auto;
+  background-color:#4CAF50;
+  padding:10px;
+  border-radius: 20px;
+  text-align-last: center;
+}
+.login-information {
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: center;
+gap:15px;
+position: relative;
+
+}
+.dropdown-options {
+position: absolute;
+background-color: #333; 
+border: 1px solid #ccc; 
+border-radius: 4px;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+z-index: 0;
+margin-top: 4px;
+width: 50%; 
+top:50px;           
+}
+
+.dropdown-options div {
+padding: 8px 12px;
+cursor: pointer; 
+color:white;        
+}
+
+.dropdown-options div:hover {
+background-color: black; 
+}
+
+.label {
+  display: block;
+  text-align: left;
+  width: 100%;
+  color:black;
+} 
+
+.ictioner-containers{
+  width:100%;  
+}
+
+.ictioner {
+  width: 100%;
+  color:black; 
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 15px;
+  border: 2px solid #06bdfc;
+  box-sizing: border-box;
+  background-color: #dbd7d7;
+}
+.ictioner::placeholder {
+  color: black; 
+  opacity: 1; 
+}
+
+.login{
+  margin-bottom: 20px;
+  width:30%;
+  border-radius: 20px;
+  padding: 10px;
+  border: none;
+  outline:none;
+  color:white;
+  font-weight:700;
+  font-size:16px;
+  background-color: black;
+}

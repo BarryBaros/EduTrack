@@ -82,7 +82,7 @@ function Homepage(){
                     <section className='goals'>
                         <h2>Our Goals</h2>
                         <ul>
-                            <li>Facilitate seamless interaction between students, teachers and parents, ensuring <br /> everyone stays informedand engagedin the learning process.<br /></li>
+                            <li>Facilitate seamless interaction between students, teachers and parents, ensuring <br /> everyone stays informed and engaged in the learning process.<br /></li>
                             <br />
                             <li>Provide a clear and accessible way for students to monitor their progress, set goals<br /> and celebrate achievemnets, while enabling teachers and parents to offer timely support.<br /></li>
                             <br />

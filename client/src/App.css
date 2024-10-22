@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .app{
 
   font-family: 'Inria Serif', serif;
@@ -31,7 +35,7 @@
   font-weight: 500;
   display: flex;
   align-items: center;
-
+  color: #333;
 }
 
 .header .logo:hover{
@@ -102,6 +106,7 @@
   width: 0;
   animation: typing 8s steps(40, end), blink-caret 0.75s step-end infinite;
   animation-iteration-count: infinite;
+  color: #313131;
 }
 
 @keyframes typing {
@@ -125,7 +130,7 @@
 
 .goals{
   padding: 30px;
-  background-color: #4a4a4a;
+  background-color: #4CAF50;
   margin-top: 80px;
   font-family: 'Inria Serif', serif;
   
@@ -224,7 +229,7 @@
 
 }
 footer{
-  background-color: #4a4a4a;
+  background-color: #4CAF50;
   color: #fff;
   padding: 10px 20px;
 }

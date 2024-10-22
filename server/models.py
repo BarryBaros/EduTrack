@@ -22,6 +22,10 @@ class Admin(db.Model, SerializerMixin):
             'admin_name': self.admin_name,
             'pin_no': self.pin_no
         }
+    
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 
 
 # Teacher Model
@@ -40,6 +44,10 @@ class Teacher(db.Model, SerializerMixin):
             'pin_no': self.pin_no,
             'name': self.name
         }
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 
 
 # Class Model
@@ -61,6 +69,10 @@ class Class(db.Model, SerializerMixin):
             'teacher_id': self.teacher_id,
             'class_capacity': self.class_capacity
         }
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 
 
 # Student Model
@@ -100,6 +112,10 @@ class Student(db.Model, SerializerMixin):
             'guardian_email': self.guardian_email
         }
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
 
 # Subject Model
 class Subject(db.Model, SerializerMixin):
@@ -117,6 +133,10 @@ class Subject(db.Model, SerializerMixin):
             'name': self.name
         }
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
 
 # Student-Subject Association Table
 class StudentSubject(db.Model, SerializerMixin):
@@ -129,3 +149,7 @@ class StudentSubject(db.Model, SerializerMixin):
     # Relationships
     student = db.relationship("Student", back_populates="student_subjects")
     subject = db.relationship("Subject", back_populates="student_subjects")
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
