@@ -61,9 +61,12 @@ const AddClass = () => {
         }
     };
     const handleDelete = async (id) => {
-        // Optimistically update the UI
-        const originalClasses = [...classes];
-        setClasses(prev => prev.filter(clas => clas.id !== id));
+        console.log("Deleting class with ID:", id); // Check if id is correctly passed
+    
+        if (!id) {
+            console.error("Invalid ID:", id);
+            return;
+        }
     
         try {
             const response = await fetch(`http://127.0.0.1:5555/classes/${id}`, {
@@ -71,21 +74,20 @@ const AddClass = () => {
             });
     
             if (!response.ok) {
-                // Roll back the UI changes if deletion fails
-                setClasses(originalClasses);
                 const errorData = await response.json();
                 throw new Error(errorData.error || 'Failed to delete class');
             }
     
             const data = await response.json();
             console.log(data.message || "Class deleted successfully");
+    
+            setClasses(prev => prev.filter(clas => clas.id !== id));
         } catch (error) {
-            // Rollback the UI in case of an error
-            setClasses(originalClasses);
             setError(error.message);
             console.error("Error deleting class:", error);
         }
     };
+    
     
 
 
