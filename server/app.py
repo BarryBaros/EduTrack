@@ -84,7 +84,9 @@ def delete_teacher(id):
         db.session.commit()
         return jsonify({'message': 'Teacher deleted successfully'}), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        db.session.rollback()  # Rollback the session in case of error
+        print(f"Error deleting teacher: {str(e)}")
+        return jsonify({'error': f"Internal server error: {str(e)}"}), 500
 
 # ------------------ STUDENT ROUTES ------------------
 
@@ -194,6 +196,17 @@ def create_subject():
         return jsonify({'message': 'Subject created successfully'}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/subjects/<int:id>', methods=['DELETE'])
+def delete_subject(id):
+    try:
+        subject = Subject.query.get_or_404(id)
+        db.session.delete(subject)
+        db.session.commit()
+        return jsonify({'message': 'Subject deleted successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 # ------------------ CLASS ROUTES ------------------
 
@@ -222,15 +235,17 @@ def create_class():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/classes/<int:id>', methods=['DELETE'])
+@app.route('/class/<int:id>', methods=['DELETE'])
 def delete_class(id):
     try:
-        classes = Class.query.get_or_404(id)
-        db.session.delete(classes)
+        clas = Class.query.get_or_404(id)
+        db.session.delete(clas)
         db.session.commit()
         return jsonify({'message': 'Class deleted successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
 
 # ------------------ ADMIN ROUTES ------------------
 
