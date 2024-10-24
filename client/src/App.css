@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 .app{
-
   font-family: 'Inria Serif', serif;
   font-weight: 200;
   margin: 0;
@@ -13,7 +12,6 @@
 
 
 .main-content-1{
-  padding: 1px;
   width: 100%;
   flex-grow: 1;
   

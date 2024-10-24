@@ -73,6 +73,23 @@ const AddStudent = () => {
         }
     };
 
+    const handleDelete = async (id) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:5555/students/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete student');
+            }
+
+            setStudents(prev => prev.filter(student => student.id !== id));
+        } catch (error) {
+            setError(error.message);
+            console.error("Error deleting student:", error);
+        }
+    };
+
     return (
         <div className="container mx-auto p-5">
             <h2 className="text-xl text-green-700 font-bold text-center mb-4">Add Student</h2>
@@ -106,6 +123,7 @@ const AddStudent = () => {
                             <th className="py-2 px-2 border-b text-left text-black">Guardian Name</th>
                             <th className="py-2 px-2 border-b text-left text-black">Guardian Contact</th>
                             <th className="py-2 px-2 border-b text-left text-black">Guardian Email</th>
+                            <th className="py-2 px-2 border-b text-left text-black">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -120,6 +138,14 @@ const AddStudent = () => {
                                 <td className="py-1 px-2 border-b text-black">{student.guardian_name}</td>
                                 <td className="py-1 px-2 border-b text-black">{student.guardian_contact}</td>
                                 <td className="py-1 px-2 border-b text-black">{student.guardian_email}</td>
+                                <td className="py-1 px-2 border-b">
+                                    <button
+                                        onClick={() => handleDelete(student.id)}
+                                        className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-500 transition"
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

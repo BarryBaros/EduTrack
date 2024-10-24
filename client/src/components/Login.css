@@ -18,8 +18,8 @@ label{
 .my-login-container{
   box-sizing: border-box;
   width:400px;
-  margin:100px auto;
-  background-color:#4CAF50;
+  margin:250px auto;
+  background-color:#000;
   padding:10px;
   border-radius: 20px;
   text-align-last: center;
@@ -91,5 +91,5 @@ background-color: black;
   color:white;
   font-weight:700;
   font-size:16px;
-  background-color: black;
+  background-color:#4CAF50;
 }
