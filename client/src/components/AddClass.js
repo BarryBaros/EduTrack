@@ -60,6 +60,37 @@ const AddClass = () => {
             console.error("Error adding class:", error);
         }
     };
+    const handleDelete = async (id) => {
+        console.log("Deleting class with ID:", id); // Check if id is correctly passed
+    
+        if (!id) {
+            console.error("Invalid ID:", id);
+            return;
+        }
+    
+        try {
+            const response = await fetch(`http://127.0.0.1:5555/class/${id}`, {
+                method: 'DELETE',
+            });
+            
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to delete class');
+            }
+    
+            const data = await response.json();
+            console.log(data.message || "Class deleted successfully");
+    
+            setClasses(prev => prev.filter(clas => clas.id !== id));
+        } catch (error) {
+            setError(error.message);
+            console.error("Error deleting class:", error);
+        }
+    };
+    
+    
+
 
     return (
         <div className="container mx-auto p-5">
@@ -82,14 +113,23 @@ const AddClass = () => {
                             <th className="py-2 px-2 border-b text-left text-black">Class Name</th>
                             <th className="py-2 px-2 border-b text-left text-black">Teacher's ID</th>
                             <th className="py-2 px-2 border-b text-left text-black">Class Capacity</th>
+                            <th className="py-2 px-2 border-b text-left text-black">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-    {classes.map((classItem, index) => (
-        <tr key={classItem.id} className={index % 2 === 0 ? 'bg-green-50' : 'bg-white'}>
-            <td className="py-1 px-2 border-b text-black">{classItem.class_name}</td>
-            <td className="py-1 px-2 border-b text-black">{classItem.teacher_id}</td>
-            <td className="py-1 px-2 border-b text-black">{classItem.class_capacity}</td>
+    {classes.map((clas, index) => (
+        <tr key={clas.id} className={index % 2 === 0 ? 'bg-green-50' : 'bg-white'}>
+            <td className="py-1 px-2 border-b text-black">{clas.class_name}</td>
+            <td className="py-1 px-2 border-b text-black">{clas.teacher_id}</td>
+            <td className="py-1 px-2 border-b text-black">{clas.class_capacity}</td>
+            <td className="py-1 px-2 border-b">
+                                    <button
+                                        onClick={() => handleDelete(classes.id)}
+                                        className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-500 transition"
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
         </tr>
     ))}
 </tbody>

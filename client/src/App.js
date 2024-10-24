@@ -19,6 +19,7 @@ import Settings from './components/Settings';
 import './App.css';
 
 
+
 const App = () => {
     const handleLogin = (admissionNumber, staffNumber, pinNumber) => {
         console.log('Login Info:', admissionNumber, staffNumber, pinNumber);
