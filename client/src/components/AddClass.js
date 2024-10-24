@@ -69,9 +69,10 @@ const AddClass = () => {
         }
     
         try {
-            const response = await fetch(`http://127.0.0.1:5555/classes/${id}`, {
+            const response = await fetch(`http://127.0.0.1:5555/class/${id}`, {
                 method: 'DELETE',
             });
+            
     
             if (!response.ok) {
                 const errorData = await response.json();

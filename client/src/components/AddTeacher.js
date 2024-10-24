@@ -66,7 +66,7 @@ const AddTeacher = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://127.0.0.1:5555/teachers/${id}`, {
+            const response = await fetch(`http://127.0.0.1:5555/delete_teachers/${id}`, {
                 method: 'DELETE',
             });
 
