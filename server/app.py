@@ -76,20 +76,17 @@ def create_teacher():
         return jsonify({'error': str(e)}), 500
 
 # Delete a teacher
-@app.route('/delete_teachers/<int:id>', methods=['DELETE'])
+@app.route('/teachers/<int:id>', methods=['DELETE'])
 def delete_teacher(id):
-    teacher = Teacher.query.get(id)
-    
-    if not teacher:
-        abort(404, description="Teacher not found")
-    
     try:
+        teacher = Teacher.query.get_or_404(id)
         db.session.delete(teacher)
         db.session.commit()
-        return jsonify({"message": "Teacher deleted successfully"}), 200
+        return jsonify({'message': 'Teacher deleted successfully'}), 200
     except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+        db.session.rollback()  # Rollback the session in case of error
+        print(f"Error deleting teacher: {str(e)}")
+        return jsonify({'error': f"Internal server error: {str(e)}"}), 500
 
 # ------------------ STUDENT ROUTES ------------------
 
