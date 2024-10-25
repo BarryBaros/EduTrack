@@ -16,6 +16,8 @@ import Dashboard from './components/Dashboard';
 import Students from './components/Students';
 import Settings from './components/Settings';
 import './App.css';
+// import Student from './components/students';
+// import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 
 
