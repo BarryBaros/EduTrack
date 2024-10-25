@@ -1,5 +1,4 @@
-
-import React from 'react';
+import logo from './logo.svg';
 import './App.css';
 import Student from './components/students'; // Import the Student component
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -7,12 +6,20 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 function App() {
   return (
     <div className="App">
-      <Router>
-      <Routes>
-        <Route path="/" element={<Student /> } />
-      </Routes>
-    </Router>
-      
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
     </div>
   );
 }
