@@ -12,29 +12,44 @@ function Login({ onLogin }) {
     const [role, setRole] = useState(''); // State for selected role
     const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        if ((admissionNumber || staffNumber) && pinNumber && role) {
-            onLogin(admissionNumber, staffNumber, pinNumber, role);
-
-            // Navigate to different pages based on role
-            switch(role) {
-                case 'Student':
-                    navigate('/students'); // Navigate to student page
-                    break;
-                case 'Teacher':
-                    navigate('/teachers'); // Navigate to teacher page
-                    break;
-                case 'Admin':
-                    navigate('/admin/dashboard'); // Navigate to admin page
-                    break;
-                default:
-                    alert("Role not recognized."); // In case of an unexpected role
+        const payload = {
+            role,
+            pinNumber,
+            ...(role === 'Student' ? { admissionNumber } : { staffNumber }),
+        };
+        
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            
+            const data = await response.json();
+            if (response.ok) {
+                switch(role) {
+                    case 'Student':
+                        navigate('/students');
+                        break;
+                    case 'Teacher':
+                        navigate('/teachers');
+                        break;
+                    case 'Admin':
+                        navigate('/admin/dashboard');
+                        break;
+                    default:
+                        alert("Role not recognized.");
+                }
+            } else {
+                alert(data.error || "Login failed");
             }
-        } else {
-            alert("Please enter either an admission number or a staff number, along with your PIN and select a role.");
+        } catch (error) {
+            alert("An error occurred. Please try again.");
         }
-    };   
+    };
+      
 
     const handleDropdownClick = () => {
         setIsOpen(!isOpen); // Toggle dropdown visibility
