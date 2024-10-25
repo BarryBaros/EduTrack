@@ -1,34 +1,32 @@
-// src/pages/Dashboard.js
+// src/components/Dashboard.js
 import React, { useEffect, useState } from 'react';
 import { Grid, Card, CardContent, Typography, Avatar, CircularProgress, Box, Divider, List, ListItem, ListItemText } from '@mui/material';
 import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-
-// Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+import axios from 'axios'; // For API calls
 
 const Dashboard = () => {
-  const [profilePic, setProfilePic] = useState(localStorage.getItem('profilePic') || 'https://via.placeholder.com/150');
+  const [studentData, setStudentData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample student data (excluding profilePic)
-  const studentData = {
-    name: 'John Doe',
-    class: '10A',
-    admissionNo: 'ADM001',
-    attendance: 95,
-    grades: [
-      { subject: 'Math', marks: 95, grade: 'A' },
-      { subject: 'English', marks: 88, grade: 'B+' },
-      { subject: 'Physics', marks: 92, grade: 'A-' },
-      { subject: 'Chemistry', marks: 85, grade: 'B' },
-      { subject: 'Computer', marks: 78, grade: 'B' },
-    ],
-    upcomingEvents: [
-      { event: 'Math Exam', date: 'Oct 20, 2024' },
-      { event: 'Science Project Submission', date: 'Oct 25, 2024' },
-      { event: 'Parent-Teacher Meeting', date: 'Nov 1, 2024' },
-    ],
-  };
+  // Fetch student data from the backend
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const response = await axios.get('/api/student/dashboard'); // Adjust endpoint as needed
+        setStudentData(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to fetch dashboard data');
+        setLoading(false);
+      }
+    };
+
+    fetchStudentData();
+  }, []);
+
+  if (loading) return <p>Loading dashboard data...</p>;
+  if (error) return <p>{error}</p>;
 
   // Chart.js data for grades
   const gradeData = {
@@ -42,23 +40,8 @@ const Dashboard = () => {
     ],
   };
 
-  // Effect to listen for profile picture changes in localStorage
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const updatedProfilePic = localStorage.getItem('profilePic');
-      if (updatedProfilePic) {
-        setProfilePic(updatedProfilePic); // Update the profile pic when it changes in localStorage
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange); // Listen to changes in localStorage
-    return () => {
-      window.removeEventListener('storage', handleStorageChange); // Clean up listener on component unmount
-    };
-  }, []);
-
   return (
-    <div style={{ padding: '2rem', backgroundColor: '#f5f6fa' }}>
+    <div className="main-content" style={{ flexGrow: 1, padding: '2rem', backgroundColor: '#f5f6fa' }}>
       {/* Dashboard Header */}
       <Typography variant="h3" align="center" gutterBottom>
         Student Dashboard
@@ -74,7 +57,7 @@ const Dashboard = () => {
             <CardContent>
               <Grid container spacing={2} alignItems="center">
                 <Grid item>
-                  <Avatar src={profilePic} sx={{ width: 80, height: 80 }} />
+                  <Avatar src={studentData.profilePic || 'https://via.placeholder.com/150'} sx={{ width: 80, height: 80 }} />
                 </Grid>
                 <Grid item>
                   <Typography variant="h5">{studentData.name}</Typography>
@@ -94,13 +77,7 @@ const Dashboard = () => {
                 Attendance
               </Typography>
               <Box sx={{ position: 'relative', display: 'inline-flex', margin: 'auto' }}>
-                <CircularProgress
-                  variant="determinate"
-                  value={studentData.attendance}
-                  size={100}
-                  thickness={4}
-                  color="primary"
-                />
+                <CircularProgress variant="determinate" value={studentData.attendance} size={100} thickness={4} color="primary" />
                 <Box
                   sx={{
                     top: 0,
@@ -135,40 +112,33 @@ const Dashboard = () => {
               <Bar
                 data={gradeData}
                 options={{
-                  responsive: true,
-                  plugins: {
-                    legend: {
-                      display: false,
-                    },
-                    title: {
-                      display: false,
+                  maintainAspectRatio: false,
+                  scales: {
+                    y: {
+                      beginAtZero: true,
                     },
                   },
                 }}
+                height={150}
               />
             </CardContent>
           </Card>
         </Grid>
-
-        {/* Upcoming Events */}
-        <Grid item xs={12}>
-          <Card elevation={3} sx={{ borderRadius: '12px' }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Upcoming Events & Assignments
-              </Typography>
-              <Divider sx={{ marginBottom: '1rem' }} />
-              <List>
-                {studentData.upcomingEvents.map((event, index) => (
-                  <ListItem key={index} sx={{ marginBottom: '0.5rem' }}>
-                    <ListItemText primary={event.event} secondary={event.date} />
-                  </ListItem>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-        </Grid>
       </Grid>
+
+      <Divider sx={{ margin: '2rem 0' }} />
+
+      {/* Upcoming Events */}
+      <Typography variant="h4" gutterBottom>
+        Upcoming Events
+      </Typography>
+      <List>
+        {studentData.upcomingEvents.map((event, index) => (
+          <ListItem key={index}>
+            <ListItemText primary={event.title} secondary={event.date} />
+          </ListItem>
+        ))}
+      </List>
     </div>
   );
 };
