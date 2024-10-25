@@ -280,39 +280,8 @@ def admin_logout():
     flash('You have been logged out.')
     return redirect(url_for('admin_login'))
 
-# ------------------ TEACHER LOGIN ROUTE ------------------
 
-# Teacher Login Route
-@app.route('/teacher_login', methods=['POST'])
-def teacher_login():
-    data = request.json  # Expecting JSON data
-    staff_id = data.get('staff_id')
-    pin_no = data.get('pin_no')
 
-    teacher = Teacher.query.filter_by(staff_id=staff_id).first()
-
-    if teacher and teacher.pin_no == pin_no:  # Check the PIN without hashing
-        login_user(teacher)  # Log the teacher in and create a session
-        return jsonify({"message": f"Welcome {teacher.staff_id}!", "success": True}), 200
-    else:
-        return jsonify({"message": "Invalid staff ID or PIN number. Please try again.", "success": False}), 401
-
-# ------------------ STUDENT LOGIN ROUTE ------------------
-
-# Student Login Route
-@app.route('/student_login', methods=['POST'])
-def student_login():
-    data = request.json  # Expecting JSON data
-    admission_no = data.get('admission_no')
-    pin_no = data.get('pin_no')
-
-    student = Student.query.filter_by(admission_no=admission_no).first()
-
-    if student and student.pin_no == pin_no:  # Check the PIN without hashing
-        login_user(student)  # Log the student in and create a session
-        return jsonify({"message": f"Welcome {student.name}!", "success": True}), 200
-    else:
-        return jsonify({"message": "Invalid admission number or PIN number. Please try again.", "success": False}), 401
 
 # ------------------ LOGOUT ROUTE ------------------
 
@@ -322,6 +291,42 @@ def student_login():
 def logout():
     logout_user()  # Logs the user out and clears the session
     return jsonify({"message": "You have been logged out.", "success": True}), 200
+
+
+
+
+
+# Universal Login Route
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    role = data.get('role')
+    staff_id = data.get('staffNumber') if role in ['Teacher', 'Admin'] else None
+    admission_no = data.get('admissionNumber') if role == 'Student' else None
+    pin_no = data.get('pinNumber')
+    
+    if not role or not pin_no or (not staff_id and not admission_no):
+        return jsonify({"error": "Missing required fields"}), 400
+    
+    # Check credentials based on role without hashing
+    if role == 'Admin':
+        user = Admin.query.filter_by(staff_id=staff_id, pin_no=pin_no).first()
+    elif role == 'Teacher':
+        user = Teacher.query.filter_by(staff_id=staff_id, pin_no=pin_no).first()
+    elif role == 'Student':
+        user = Student.query.filter_by(admission_no=admission_no, pin_no=pin_no).first()
+    else:
+        return jsonify({"error": "Invalid role specified"}), 400
+    
+    if user:
+        # Successful login
+        user_data = user.to_dict()
+        return jsonify({"message": f"{role} login successful", "user": user_data}), 200
+    else:
+        # Failed login
+        return jsonify({"error": "Invalid credentials"}), 401
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
