@@ -47,7 +47,7 @@ const Classes = () => {
   // Logout handler (can be hooked to authentication logic)
   const handleLogout = () => {
     alert('You have logged out!');
-    // Add your logout logic here (e.g., clearing session, redirecting to login page)
+    window.location.href = '/'; 
   };
 
   return (
