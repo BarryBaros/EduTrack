@@ -153,3 +153,55 @@ class StudentSubject(db.Model, SerializerMixin):
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+
+# Marks Model
+class Marks(db.Model, SerializerMixin):
+    __tablename__ = 'marks'
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), nullable=False)
+    score = db.Column(db.Float, nullable=False)
+    term = db.Column(db.String(20), nullable=False)  # e.g., "Term 1", "Term 2", etc.
+
+    # Relationships
+    student = db.relationship('Student', backref='marks', lazy=True)
+    subject = db.relationship('Subject', backref='marks', lazy=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'student_id': self.student_id,
+            'subject_id': self.subject_id,
+            'score': self.score,
+            'term': self.term
+        }
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+# Remarks Model
+class Remarks(db.Model, SerializerMixin):
+    __tablename__ = 'remarks'
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
+    comment = db.Column(db.Text, nullable=False)
+    date = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    # Relationship
+    student = db.relationship('Student', backref='remarks', lazy=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'student_id': self.student_id,
+            'comment': self.comment,
+            'date': self.date.strftime('%Y-%m-%d %H:%M:%S')
+        }
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()

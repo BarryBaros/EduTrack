@@ -106,6 +106,12 @@ function TeachersPage({
   };
 
   const handleSave = async () => {
+    // Check if a student is selected
+    if (!searchedStudentName) {
+      alert("Please search for a student before saving marks.");
+      return;
+    }
+  
     try {
       const response = await fetch("http://127.0.0.1:5555/save_marks", {
         method: "POST",
@@ -113,18 +119,22 @@ function TeachersPage({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          student: studentName,
+          student: searchedStudentName, // Use the searched student name
           marks: marks,
           remarks: remarks,
         }),
       });
-      
+  
+      // Check if the response is OK (status in the range 200-299)
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        // Get the response error message if available
+        const errorMessage = await response.text();
+        throw new Error(`Network response was not ok: ${errorMessage}`);
       }
-      
+  
       const result = await response.json();
-      alert(result.message); // Assuming your server sends back a success message
+      alert(result.message);
+  
       // Reset form fields
       setStudent("");
       setMarks({});
@@ -135,7 +145,7 @@ function TeachersPage({
       navigate("/students");
     } catch (error) {
       console.error("Error saving marks:", error);
-      alert("An error occurred while saving marks.");
+      alert("An error occurred while saving marks: " + error.message);
     }
   };
 
@@ -170,6 +180,7 @@ function TeachersPage({
 
   // Logout handler
   const handleLogout = () => {
+    alert('You have logged out!');
     navigate("/"); // Redirect to home page
   };
 
@@ -191,14 +202,12 @@ function TeachersPage({
         {menuVisible && (
           <ul>
             <li onClick={() => navigateTo("/")}>Home</li>
-            <li onClick={() => navigateTo("/about")}>About</li>
+            <li onClick={() => navigateTo("/classes")}>Classes</li>
             <li onClick={() => navigateTo("/teachers")}>Teachers</li>
-            <li onClick={() => navigateTo("/students")}>
-              Students
-            </li>
-            <li onClick={() => navigateTo("/attendance-report")}>
-              Attendance-report
-            </li>
+            <li onClick={() => navigateTo("/students")}>Students</li>
+            <li onClick={() => navigateTo("/settings")}>Settings</li>
+            <li onClick={() => navigateTo("/dashboard")}>Dashboard</li>
+            <li onClick={() => navigateTo("/attendance-report")}>Attendance-report</li>
           </ul>
         )}
 

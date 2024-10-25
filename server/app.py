@@ -284,6 +284,13 @@ def admin_logout():
 
 
 # ------------------ LOGOUT ROUTE ------------------
+@app.route('/save_marks', methods=['POST'])
+def save_marks():
+    data = request.get_json()
+    # Process the data...
+    return jsonify({"message": "Marks saved successfully!"}), 200
+
+# ------------------ LOGOUT ROUTE ------------------
 
 # Logout Route (for Teachers and Students)
 @app.route('/logout', methods=['POST'])
