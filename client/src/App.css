@@ -1,21 +1,38 @@
-.App {
-  text-align: center;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.app{
+
+  font-family: 'Inria Serif', serif;
+  font-weight: 200;
+  margin: 0;
+  padding: 0;
+  display: flex;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+
+.main-content-1{
+  padding: 1px;
+  width: 100%;
+  flex-grow: 1;
+  
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #ffffff99;
+  color: #333;
+  margin-top: 10px;
+
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.header .logo{
+  font-size: 1.5rem;
+  font-weight: 500;
   display: flex;
   flex-direction: column;
   align-items: center;

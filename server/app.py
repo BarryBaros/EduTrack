@@ -41,12 +41,69 @@ def load_user(user_id):
 def index():
     return 'Hi, welcome to EduTrack!'
 
-# Fetch student details
-@app.route('/api/student/<int:student_id>', methods=['GET'])
-@login_required
-def get_student(student_id):
-    student = Student.query.get(student_id)
-    if not student:
+# ------------------ TEACHER ROUTES ------------------
+
+# Get all teachers
+@app.route('/teachers', methods=['GET'])
+def get_teachers():
+    try:
+        teachers = Teacher.query.all()
+        return jsonify([teacher.to_dict() for teacher in teachers]), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Create a new teacher
+@app.route('/teachers', methods=['POST'])
+def create_teacher():
+    data = request.get_json()
+    try:
+        if not all(key in data for key in ('staff_id', 'pin_no', 'name')):
+            return jsonify({'error': 'Missing required fields'}), 400
+
+        # Check for existing staff_id
+        existing_teacher = Teacher.query.filter_by(staff_id=data['staff_id']).first()
+        if existing_teacher:
+            return jsonify({'error': 'Staff ID already exists'}), 400
+
+        new_teacher = Teacher(
+            staff_id=data['staff_id'],
+            pin_no=data['pin_no'],
+            name=data['name']
+        )
+        db.session.add(new_teacher)
+        db.session.commit()
+        return jsonify(new_teacher.to_dict()), 201  # Return created teacher's data
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Delete a teacher
+@app.route('/teachers/<int:id>', methods=['DELETE'])
+def delete_teacher(id):
+    try:
+        teacher = Teacher.query.get_or_404(id)
+        db.session.delete(teacher)
+        db.session.commit()
+        return jsonify({'message': 'Teacher deleted successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ------------------ STUDENT ROUTES ------------------
+
+# Get all students
+@app.route('/students', methods=['GET'])
+def get_students():
+    try:
+        students = Student.query.all()
+        return jsonify([student.to_dict() for student in students]), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@app.route('/students/name/<string:name>', methods=['GET'])
+def get_student_by_name(name):
+    student = Student.query.filter_by(name=name).first()
+    if student:
+        return jsonify(student.to_dict()), 200
+    else:
         return jsonify({'error': 'Student not found'}), 404
 
     student_data = {
@@ -74,15 +131,72 @@ def update_student(student_id):
         return jsonify({'error': 'Unauthorized access'}), 403
 
     data = request.get_json()
-    student.guardian_name = data.get('guardian_name', student.guardian_name)
-    student.guardian_contact = data.get('guardian_contact', student.guardian_contact)
-    student.guardian_email = data.get('guardian_email', student.guardian_email)
+    try:
+        new_subject = Subject(name=data['name'])
+        db.session.add(new_subject)
+        db.session.commit()
+        return jsonify({'message': 'Subject created successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
-    db.session.commit()
-    return jsonify({'message': 'Student profile updated successfully.'}), 200
+# ------------------ CLASS ROUTES ------------------
 
-# Upload student image
-@app.route('/api/student/<int:student_id>/upload_image', methods=['POST'])
+# Get all classes
+@app.route('/get_classes', methods=['GET'])
+def get_classes():
+    try:
+        classes = Class.query.all()
+        return jsonify([cls.to_dict() for cls in classes]), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Create a new class
+@app.route('/classes', methods=['POST'])
+def create_class():
+    data = request.get_json()
+    try:
+        new_class = Class(
+            class_name=data['class_name'],
+            teacher_id=data['teacher_id'],
+            class_capacity=data['class_capacity']
+        )
+        db.session.add(new_class)
+        db.session.commit()
+        return jsonify({'message': 'Class created successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/classes/<int:id>', methods=['DELETE'])
+def delete_class(id):
+    try:
+        classes = Class.query.get_or_404(id)
+        db.session.delete(classes)
+        db.session.commit()
+        return jsonify({'message': 'Class deleted successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ------------------ ADMIN ROUTES ------------------
+
+# Admin Login Route
+@app.route('/admin_login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        staff_id = request.form['staff_id']
+        pin_no = request.form['pin_no']
+        admin = Admin.query.filter_by(staff_id=staff_id).first()
+
+        if admin and admin.pin_no == pin_no:  # Check the PIN without hashing
+            login_user(admin)  # Log the admin in and create a session
+            flash(f'Welcome {admin.staff_id}! You are logged in.')
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash('Invalid staff ID or PIN number. Please try again.')
+
+    return render_template('admin_login.html')
+
+# Admin Dashboard Route
+@app.route('/admin_dashboard')
 @login_required
 def upload_student_image(student_id):
     student = Student.query.get(student_id)

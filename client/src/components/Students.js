@@ -1,5 +1,6 @@
 // src/pages/Students.js
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { Button } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout'; // Import the logout icon
 import '../components/StudentProfile.css'; // Assuming this file contains your custom styles
@@ -15,6 +16,8 @@ const Students = () => {
       setProfilePic(storedPic);
     }
   }, []);
+
+  const navigate = useNavigate();
 
   // Dynamic data for student profile
   const studentData = {
@@ -35,7 +38,9 @@ const Students = () => {
 
   // Logout handler (can be hooked to authentication logic)
   const handleLogout = () => {
+   
     alert('You have logged out!');
+    navigate('/')
     // Add your logout logic here (e.g., clearing session, redirecting to login page)
   };
 
