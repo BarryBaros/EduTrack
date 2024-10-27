@@ -50,7 +50,7 @@ function TeachersPage({
       }
 
       const response = await fetch(
-        `http://127.0.0.1:5555/students/admission_no/${student}`
+        "http://127.0.0.1:5555/students/admission_no/${student}"
       );
 
       if (!response.ok) {
