@@ -171,7 +171,7 @@ function TeachersPage({
   };
 
   const handleLogout = () => {
-    alert('You have logged out!');
+    alert('Logged out!');
     navigate("/"); 
   };
 

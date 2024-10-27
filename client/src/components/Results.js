@@ -1,33 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import "boxicons";
 
 function Results() {
     const navigate = useNavigate();
     const [studentResults, setStudentResults] = useState([]);
     const [editingIndex, setEditingIndex] = useState(null);
     const [editMarks, setEditMarks] = useState({});
+    const [editRemarks, setEditRemarks] = useState({});
     const [menuVisible, setMenuVisible] = useState(false);
-    const [teacherNames, setTeacherNames] = useState([]); // For storing teacher names
-    const [selectedTeacher, setSelectedTeacher] = useState(""); // For storing selected teacher
+    const [teacherNames, setTeacherNames] = useState([]);
+    const [selectedTeacher, setSelectedTeacher] = useState("");
 
-    // Load saved student results from localStorage on component mount
     useEffect(() => {
         const storedResults = JSON.parse(localStorage.getItem("studentResults")) || [];
         setStudentResults(storedResults);
     }, []);
 
-    // Fetch teacher names from the database
     useEffect(() => {
         const fetchTeacherNames = async () => {
-            const response = await fetch("/api/teachers"); // Example endpoint
+            const response = await fetch("/api/teachers");
             const data = await response.json();
-            setTeacherNames(data); // Assuming data is an array of teacher objects
+            setTeacherNames(data);
         };
-
         fetchTeacherNames();
     }, []);
 
-    // Update localStorage whenever studentResults changes
     useEffect(() => {
         localStorage.setItem("studentResults", JSON.stringify(studentResults));
     }, [studentResults]);
@@ -42,21 +40,27 @@ function Results() {
     const handleEdit = (index) => {
         setEditingIndex(index);
         setEditMarks(studentResults[index].marks);
+        setEditRemarks(studentResults[index].remarks);
     };
 
     const handleSave = (index) => {
         const total = Object.values(editMarks).reduce((sum, score) => sum + (parseInt(score) || 0), 0);
         const calculatedGrade = calculateGrade(total);
         const updatedResults = studentResults.map((result, i) =>
-            i === index ? { ...result, marks: editMarks, grade: calculatedGrade } : result
+            i === index ? { ...result, marks: editMarks, remarks: editRemarks, grade: calculatedGrade } : result
         );
         setStudentResults(updatedResults);
-        setEditingIndex(null); // Exit editing mode
+        setEditingIndex(null);
     };
 
     const handleMarksChange = (subject, value) => {
         const updatedMarks = { ...editMarks, [subject]: value };
         setEditMarks(updatedMarks);
+    };
+
+    const handleRemarksChange = (subject, value) => {
+        const updatedRemarks = { ...editRemarks, [subject]: value };
+        setEditRemarks(updatedRemarks);
     };
 
     const calculateGrade = (total) => {
@@ -92,7 +96,17 @@ function Results() {
                                     score
                                 )}
                             </td>
-                            <td>{remarks[subject] || "No remarks"}</td>
+                            <td>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        value={editRemarks[subject] || ""}
+                                        onChange={(e) => handleRemarksChange(subject, e.target.value)}
+                                    />
+                                ) : (
+                                    remarks[subject] || "No remarks"
+                                )}
+                            </td>
                         </tr>
                     ))}
                 </tbody>
@@ -111,91 +125,99 @@ function Results() {
 
     return (
         <div className="teachers-page">
-            <div className="sidebar1">
-                <div className="menu-toggle" onClick={toggleMenu}>
-                    {menuVisible ? <i className="bx bx-x"></i> : <i className="bx bx-menu"></i>}
+            <Sidebar menuVisible={menuVisible} toggleMenu={toggleMenu} navigate={navigate} />
+            <div className="main-content">
+                {/* Header Section with Logout Button */}
+                <div className="header">
+                    <div className="logout-container" onClick={handleLogout}>
+                        <span className="logout-text">Logout</span>
+                        <i className="bx bx-log-out"></i>
+                    </div>
                 </div>
-                {menuVisible && (
-                    <ul>
-                        <li onClick={() => navigate("/")}>Home</li>
-                        <li onClick={() => navigate("/classes")}>Classes</li>
-                        <li onClick={() => navigate("/teachers")}>Teachers</li>
-                        <li onClick={() => navigate("/students")}>Students</li>
-                        <li onClick={() => navigate("/settings")}>Settings</li>
-                        <li onClick={() => navigate("/dashboard")}>Dashboard</li>
-                        <li onClick={() => navigate("/attendance-report")}>Attendance-report</li>
-                    </ul>
-                )}
-            </div>
 
-            <div className="header1">
-                <div className="logout-container1" onClick={handleLogout}>
-                    <span className="logout-text1">Logout</span>
-                    <i className="bx bx-log-out"></i>
+                {/* Teacher Dropdown */}
+                <div className="teacher-select">
+                    <select
+                        id="teacher-dropdown"
+                        value={selectedTeacher}
+                        onChange={(e) => setSelectedTeacher(e.target.value)}
+                    >
+                        <option value="">-- Select Teacher --</option>
+                        {teacherNames.map((teacher) => (
+                            <option key={teacher.id} value={teacher.name}>
+                                {teacher.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Results Section */}
+                <div>
+                    <h2 className="h2-attendance">Student Results</h2>
+                    <table className="results-display">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Admission Number</th>
+                                <th>Marks</th>
+                                <th>Total Marks & Grade</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {studentResults.map((result, index) => {
+                                const totalMarks = editingIndex === index
+                                    ? Object.values(editMarks).reduce((sum, score) => sum + (parseInt(score) || 0), 0)
+                                    : Object.values(result.marks).reduce((sum, score) => sum + (parseInt(score) || 0), 0);
+
+                                const grade = calculateGrade(totalMarks);
+
+                                return (
+                                    <tr key={index}>
+                                        <td>{result.name}</td>
+                                        <td>{result.admissionNo}</td>
+                                        <td>{renderMarksTable(result.marks, result.remarks, index === editingIndex)}</td>
+                                        <td>{totalMarks} - {grade}</td>
+                                        <td>
+                                            {index === editingIndex ? (
+                                                <button onClick={() => handleSave(index)}>Save</button>
+                                            ) : (
+                                                <button onClick={() => handleEdit(index)}>Edit</button>
+                                            )}
+                                            <button onClick={() => handleDelete(index)}>Delete</button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
-            <div className="teacher-select">
-
-                <select
-                    id="teacher-dropdown"
-                    value={selectedTeacher}
-                    onChange={(e) => setSelectedTeacher(e.target.value)}
-                >
-                    <option value="">-- Select Teacher --</option>
-                    {teacherNames.map((teacher) => (
-                        <option key={teacher.id} value={teacher.name}>
-                            {teacher.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <div className="social-icons">
-         <i class='bx bxl-facebook-square' ></i>
-         <i class='bx bxl-twitter'></i>
-         <i class='bx bxl-linkedin-square' ></i>
         </div>
+    );
+}
 
-            <div>
-                <h2 className="h2-attendance">Student Results</h2>
-                <table  className="results-display">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Admission Number</th>
-                            <th>Marks</th>
-                            <th>Total Marks & Grade</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {studentResults.map((result, index) => {
-                            const totalMarks = editingIndex === index
-                                ? Object.values(editMarks).reduce((sum, score) => sum + (parseInt(score) || 0), 0)
-                                : Object.values(result.marks).reduce((sum, score) => sum + (parseInt(score) || 0), 0);
-
-                            const grade = calculateGrade(totalMarks);
-
-                            return (
-                                <tr key={index}>
-                                    <td>{result.name}</td>
-                                    <td>{result.admissionNo}</td>
-                                    <td>{renderMarksTable(result.marks, result.remarks, index === editingIndex)}</td>
-                                    <td>{totalMarks} - {grade}</td>
-                                    <td>
-                                        {index === editingIndex ? (
-                                            <button onClick={() => handleSave(index)}>Save</button>
-                                        ) : (
-                                            <button onClick={() => handleEdit(index)}>Edit</button>
-                                        )}
-                                        <button onClick={() => handleDelete(index)}>Delete</button>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+function Sidebar({ menuVisible, toggleMenu, navigate }) {
+    return (
+        <div className="sidebar1">
+            <div className="menu-toggle" onClick={toggleMenu}>
+                {menuVisible ? <i className="bx bx-x"></i> : <i className="bx bx-menu"></i>}
+            </div>
+            {menuVisible && (
+                <ul>
+                    <li onClick={() => navigate("/")}>Home</li>
+                    <li onClick={() => navigate("/classes")}>Classes</li>
+                    <li onClick={() => navigate("/teachers")}>Teachers</li>
+                    <li onClick={() => navigate("/students")}>Students</li>
+                    <li onClick={() => navigate("/settings")}>Settings</li>
+                    <li onClick={() => navigate("/dashboard")}>Dashboard</li>
+                    <li onClick={() => navigate("/attendance-report")}>Attendance-report</li>
+                </ul>
+            )}
+            <div className="social-icons">
+                <i className="bx bxl-facebook-square"></i>
+                <i className="bx bxl-twitter"></i>
+                <i className="bx bxl-linkedin-square"></i>
             </div>
         </div>
     );
