@@ -158,6 +158,10 @@ button:hover {
   text-align: center;
 }
 
+.results1{
+background-color: black;
+}
+
 .menu-toggle {
   cursor: pointer; 
   font-size: 40px;
@@ -167,12 +171,13 @@ button:hover {
 /* Social icons styling */
 .social-icons {
   position: absolute; /* Absolute positioning to stay in the same place */
-  bottom: 70px; /* Space from the bottom of the sidebar */
+  bottom: 30px; /* Space from the bottom of the sidebar */
   text-align: center; 
   display: flex;
   color: black;
   gap: 20px;
   font-size: 30px;
+  margin: 40px;
 }
 
 .social-icons box-icon {
@@ -285,4 +290,8 @@ input[type="number"] {
 
 }
 
+/* Marks and Grades Table Styling */
+.marks_grades_h2 {
+  font-size: 25px;
+}
 
