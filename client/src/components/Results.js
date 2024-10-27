@@ -19,7 +19,7 @@ function Results() {
 
     useEffect(() => {
         const fetchTeacherNames = async () => {
-            const response = await fetch("/api/teachers");
+            const response = await fetch("/teachers");
             const data = await response.json();
             setTeacherNames(data);
         };
