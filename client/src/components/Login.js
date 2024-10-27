@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './Login.css';
-
 import drop from '../assets/drop.jpg'; 
 
 function Login({ onLogin }) {
     const [admissionNumber, setAdmissionNumber] = useState('');
     const [staffNumber, setStaffNumber] = useState('');
     const [pinNumber, setPinNumber] = useState(''); 
-    const [isOpen, setIsOpen] = useState(false); // State for dropdown visibility
-    const [role, setRole] = useState(''); // State for selected role
+    const [isOpen, setIsOpen] = useState(false);
+    const [role, setRole] = useState('');
     const navigate = useNavigate();
+    const [teacherName, setTeacherName] = useState(''); // State for storing the teacher's name
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -29,18 +29,21 @@ function Login({ onLogin }) {
             
             const data = await response.json();
             if (response.ok) {
-                switch(role) {
-                    case 'Student':
-                        navigate('/students');
-                        break;
-                    case 'Teacher':
-                        navigate('/teachers');
-                        break;
-                    case 'Admin':
-                        navigate('/admin/dashboard');
-                        break;
-                    default:
-                        alert("Role not recognized.");
+                if (role === 'Teacher') {
+                    setTeacherName(data.name); // Assuming the backend returns the teacher's name as 'name'
+                    navigate('/teachers'); // Navigate after setting the teacher's name
+                } else {
+                    // Handle navigation for other roles
+                    switch(role) {
+                        case 'Student':
+                            navigate('/students');
+                            break;
+                        case 'Admin':
+                            navigate('/admin/dashboard');
+                            break;
+                        default:
+                            alert("Role not recognized.");
+                    }
                 }
             } else {
                 alert(data.error || "Login failed");
@@ -49,15 +52,14 @@ function Login({ onLogin }) {
             alert("An error occurred. Please try again.");
         }
     };
-      
-
+    
     const handleDropdownClick = () => {
-        setIsOpen(!isOpen); // Toggle dropdown visibility
+        setIsOpen(!isOpen);
     };
 
     const handleOptionClick = (selectedRole) => {
-        setRole(selectedRole); // Set the selected role
-        setIsOpen(false); // Close dropdown after selection
+        setRole(selectedRole);
+        setIsOpen(false);
     };
 
     return (
@@ -65,7 +67,7 @@ function Login({ onLogin }) {
             <h1 className="nameh1">Account Login</h1>
             <div className="login-information">
                 <p className="login-as">Login as</p>
-                <img src={drop} alt="dropdown" className="dropdown}" onClick={handleDropdownClick} />
+                <img src={drop} alt="dropdown" className="dropdown" onClick={handleDropdownClick} />
                 {isOpen && (
                     <div className="dropdown-options">
                         <div onClick={() => handleOptionClick('Student')}>Student</div>
@@ -84,7 +86,7 @@ function Login({ onLogin }) {
                         value={admissionNumber}
                         onChange={(e) => setAdmissionNumber(e.target.value)}
                         placeholder="Enter admission number"
-                        disabled={role === 'Teacher' || role === 'Admin'} // Disable if Teacher or Admin is selected
+                        disabled={role === 'Teacher' || role === 'Admin'}
                     />
                 </div>
 
@@ -96,7 +98,7 @@ function Login({ onLogin }) {
                         value={staffNumber}
                         onChange={(e) => setStaffNumber(e.target.value)}
                         placeholder="Enter staff number"
-                        disabled={role === 'Student'} // Disable if Student is selected
+                        disabled={role === 'Student'}
                     />
                 </div>
 
@@ -113,6 +115,12 @@ function Login({ onLogin }) {
                 
                 <button type="submit" className="login">Login</button>
             </form>
+
+            {role === 'Teacher' && teacherName && (
+                <div className="welcome-message">
+                    <h2>Welcome, {teacherName}!</h2> {/* Displaying teacher's name */}
+                </div>
+            )}
         </div>
     );
 };
