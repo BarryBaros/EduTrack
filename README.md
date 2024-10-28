@@ -1,70 +1,127 @@
-# Getting Started with Create React App
+EduTrack
+EduTrack is a school management system designed to streamline the management of students, teachers, classes, subjects, and admin operations. It is built using Flask for the backend and React for the frontend, providing a user-friendly interface to manage all academic activities.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Table of Contents
+Features
+Technologies
+Installation
+Usage
+API Endpoints
+Database Models
+Contributing
+License
+Features
+User Authentication: Admin, teachers, and students can log in securely using session-based authentication via Flask-Login.
+Role Management: Different roles (Admin, Teacher, Student) with tailored access to resources.
+Class Management: Create, update, and manage class assignments for students and teachers.
+Subject Management: Add, update, and assign subjects to classes and teachers.
+Student and Teacher Management: Track and manage student enrollment and teacher assignments.
+Email Notifications: Integrated form submission using EmailJS to receive feedback or queries.
+Technologies
+Backend
+Flask: A lightweight Python framework used for building the backend.
+Flask-Login: Session management for user authentication.
+SQLAlchemy: ORM used for database models and queries.
+Flask-Migrate: Database migration tool.
+Frontend
+React: JavaScript library for building the user interface.
+react-router-dom: For managing frontend routing.
+Other Tools
+SQLAlchemy Serializer: Automatically serializes SQLAlchemy models into JSON format.
+EmailJS: Used to handle form submissions and send emails.
+Installation
+Prerequisites
+Ensure you have the following installed:
 
-## Available Scripts
+Python 3.x
+Node.js and npm (for React)
+A database system like SQLite or MySQL
+Steps
+Clone the repository:
 
-In the project directory, you can run:
+bash
+Copy code
+git clone https://github.com/BarryBaros/EduTrack.git
+cd EduTrack
+Set up the backend (Flask):
 
-### `npm start`
+Install dependencies:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+bash
+Copy code
+pip install -r requirements.txt
+Set up your environment variables in a .env file:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+makefile
+Copy code
+FLASK_APP=app
+FLASK_ENV=development
+DATABASE_URI=<your_database_uri>
+Initialize the database:
 
-### `npm test`
+bash
+Copy code
+flask db init
+flask db migrate
+flask db upgrade
+Run the Flask server:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+bash
+Copy code
+flask run --port=5555
+Set up the frontend (React):
+Navigate to the client directory:
 
-### `npm run build`
+bash
+Copy code
+cd client
+Install dependencies:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+bash
+Copy code
+npm install
+Start the React development server:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+bash
+Copy code
+npm start
+Visit the app:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Backend API: http://localhost:5555
+Frontend: http://localhost:3000
+Usage
+Admin Login: Admins can log in and manage students, teachers, classes, and subjects.
+Teacher Login: Teachers can view their assigned classes and subjects.
+Student Login: Students can view their enrolled subjects and assigned classes.
+User Roles
+Admin has full control over the entire system.
+Teachers can manage classes and subjects assigned to them.
+Students can view their courses and performance.
+API Endpoints
+Method	Endpoint	Description
+GET	/api/admins	Fetch all admins
+POST	/api/admins	Add a new admin
+GET	/api/teachers	Fetch all teachers
+POST	/api/teachers	Add a new teacher
+GET	/api/students	Fetch all students
+POST	/api/students	Add a new student
+GET	/api/classes	Fetch all classes
+POST	/api/classes	Create a new class
+GET	/api/subjects	Fetch all subjects
+POST	/api/subjects	Add a new subject
+Database Models
+Admin: Handles administrative tasks.
+Teacher: Manages subject and class assignments.
+Student: Tracks enrollment and class performance.
+Class: Represents a class with a list of students and assigned teacher(s).
+Subject: Contains the list of subjects taught in the school.
+Contributing
+Fork the repository.
+Create a new branch for your feature: git checkout -b feature-name
+Make your changes.
+Commit your changes: git commit -m 'Add some feature'
+Push to the branch: git push origin feature-name
+Submit a pull request.
+License
+This project is licensed under the MIT License.
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
