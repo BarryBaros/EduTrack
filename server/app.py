@@ -165,13 +165,16 @@ def delete_student(id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-@app.route('/students/admission_number/<string:admission_number>', methods=['GET'])
-def get_student_by_admission_number(admission_number):
-    student = Student.query.filter_by(admission_number=admission_number).first()  # Assuming your Student model has an admission_number field
-    if student:
-        return jsonify(student.to_dict()), 200
-    else:
-        return jsonify({'error': 'Student not found'}), 404
+@app.route('/students/admission_no/<string:admission_no>', methods=['GET'])
+def get_student_by_admission_no(admission_no):
+    try:
+        student = Student.query.filter_by(admission_no=admission_no).first()
+        if student:
+            return jsonify(student.to_dict()), 200
+        else:
+            return jsonify({'error': 'Student not found'}), 404
+    except Exception as e:
+        return jsonify({'error': f"An error occurred: {str(e)}"}), 500
 
 
 # ------------------ SUBJECT ROUTES ------------------
@@ -297,7 +300,7 @@ def save_marks():
 @login_required
 def logout():
     logout_user()  # Logs the user out and clears the session
-    return jsonify({"message": "You have been logged out.", "success": True}), 200
+    return jsonify({"message": "Logged out.", "success": True}), 200
 
 
 
