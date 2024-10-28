@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Homepage from './components/Homepage';
 import Login from './components/Login';
-import About from './components/About';
+import Classes from './components/Classes';
+import Results from './components/Results'
 import Teachers from './components/Teachers';
 import StudentsReport from './components/StudentsReport';
 import AttendanceReport from './components/AttendanceReport';
@@ -14,16 +15,17 @@ import AddStudent from './components/AddStudent';
 import Sidebarpg from './components/Sidebarpg';
 import Dashboard from './components/Dashboard';
 import Students from './components/Students';
-import Classes from './components/Classes';
 import Settings from './components/Settings';
 import './App.css';
+// import Student from './components/students';
+// import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 
 
 const App = () => {
     const handleLogin = (admissionNumber, staffNumber, pinNumber) => {
         console.log('Login Info:', admissionNumber, staffNumber, pinNumber);
-        // Perform login logic here
+       
     };    
 
     return (
@@ -31,7 +33,8 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/login" element={<Login onLogin={handleLogin} />} />
-                <Route path="/about" element={<About />} />
+                <Route path="/classes" element={<Classes />} />
+                <Route path="/results" element={<Results />} />
                 <Route path="/teachers" element={<Teachers />} />
                 <Route path="/students-report" element={<StudentsReport />} />
                 <Route path="/attendance-report" element={<AttendanceReport />} />

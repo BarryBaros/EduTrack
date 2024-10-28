@@ -48,7 +48,7 @@
   display: flex;
   align-items: center;
   cursor: pointer; 
-  font-size: 30px;
+  font-size: 20px;
 }
 
 .logout-text {
@@ -158,21 +158,26 @@ button:hover {
   text-align: center;
 }
 
+.results1{
+background-color: black;
+}
+
 .menu-toggle {
   cursor: pointer; 
-  font-size: 60px;
+  font-size: 40px;
   margin: 20px;
 }
 
 /* Social icons styling */
 .social-icons {
   position: absolute; /* Absolute positioning to stay in the same place */
-  bottom: 70px; /* Space from the bottom of the sidebar */
+  bottom: 30px; /* Space from the bottom of the sidebar */
   text-align: center; 
   display: flex;
   color: black;
   gap: 20px;
   font-size: 30px;
+  margin: 40px;
 }
 
 .social-icons box-icon {
@@ -212,7 +217,7 @@ button:hover {
 /* Attendance Styling */
 
 .attendance-term {
-  padding: 20px;
+  padding: 30px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #f9f9f9;
@@ -234,10 +239,19 @@ button:hover {
   margin-bottom: 10px;
 }
 
+hr{
+  width: 100%;
+margin: 30px 0;
+border: none; 
+border-top: 2px solid #4CAF50;
+}
+
 .h2-attendance {
   color: #333;
   text-align: center;
-  margin-bottom: 30px; /* Space below the heading */
+  margin-bottom: 20px; /* Space below the heading */
+  margin: 50px;
+  font-size: 30px;
 }
 
 .total-present {
@@ -276,4 +290,8 @@ input[type="number"] {
 
 }
 
+/* Marks and Grades Table Styling */
+.marks_grades_h2 {
+  font-size: 25px;
+}
 

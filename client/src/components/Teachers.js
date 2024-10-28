@@ -1,42 +1,20 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
-import "boxicons"; 
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "boxicons";
 
 function TeachersPage({
   teacherName = "Mr John Kennedy",
-  studentName = "Sarah James",
 }) {
   const [student, setStudent] = useState("");
   const [marks, setMarks] = useState({});
   const [remarks, setRemarks] = useState({});
-  const [selectedClass, setSelectedClass] = useState("Form-1"); // State for selected class
+  const [selectedClass, setSelectedClass] = useState("Form-1");
   const [menuVisible, setMenuVisible] = useState(false);
-  const [editSubject, setEditSubject] = useState(null);
   const [searchStatus, setSearchStatus] = useState("");
-  const [notification, setNotification] = useState("");
-  const [selectedYear, setSelectedYear] = useState("2010");
   const [searchedStudentName, setSearchedStudentName] = useState("");
-
-
-  // Attendance state
-  const [attendance, setAttendance] = useState({
-    "First Term": {
-      January: { present: 0, absent: 0 },
-      February: { present: 0, absent: 0 },
-      March: { present: 0, absent: 0 },
-    },
-    "Second Term": {
-      May: { present: 0, absent: 0 },
-      June: { present: 0, absent: 0 },
-      July: { present: 0, absent: 0 },
-    },
-    "Third Term": {
-      September: { present: 0, absent: 0 },
-      October: { present: 0, absent: 0 },
-      November: { present: 0, absent: 0 },
-    },
-  });
-
+  const [savedMarks, setSavedMarks] = useState({});
+  const [savedRemarks, setSavedRemarks] = useState({});
+  
   const subjects = [
     "Maths",
     "English",
@@ -46,35 +24,55 @@ function TeachersPage({
     "Physics",
     "History",
   ];
-  const classes = ["Form-1", "Form-2", "Form-3", "Form-4"]; // List of classes
-  const years = ["2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"];
-
-  const navigate = useNavigate(); // Initialize the navigate function
+  const classes = ["Form-1", "Form-2", "Form-3", "Form-4"];
   
+  const navigate = useNavigate();
+
+  // Load saved marks and remarks from localStorage on component mount
+  useEffect(() => {
+    const storedMarks = JSON.parse(localStorage.getItem("savedMarks")) || {};
+    const storedRemarks = JSON.parse(localStorage.getItem("savedRemarks")) || {};
+    setSavedMarks(storedMarks);
+    setSavedRemarks(storedRemarks);
+  }, []);
+
+  // Save marks and remarks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("savedMarks", JSON.stringify(savedMarks));
+    localStorage.setItem("savedRemarks", JSON.stringify(savedRemarks));
+  }, [savedMarks, savedRemarks]);
+
   const handleSearch = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:5555/students/name/${student}`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      if (!student) {
+        alert("Please enter a student admission number.");
+        return;
       }
+
+      const response = await fetch(
+        "http://127.0.0.1:5555/students/admission_no/${student}"
+      );
+
+      if (!response.ok) {
+        throw new Error(`Server Error: ${response.status}`);
+      }
+
       const data = await response.json();
-      console.log(data); // Log the data returned from the server
-  
-      if (data && data.name && data.name.toLowerCase() === student.toLowerCase()) {
-        setSearchedStudentName(data.name); // Set the searched student's name
+      console.log("Fetched student data:", data);
+
+      if (data && data.admission_no && data.admission_no.toString() === student) {
+        setSearchedStudentName(data.name);
         setSearchStatus("Successful");
-        // alert(`Student ${data.name} found!`);
       } else {
         setSearchStatus("Student not found");
         alert("Student not found! Please check the admission number.");
       }
-      
     } catch (error) {
       console.error("Error fetching student:", error);
       setSearchStatus("Error fetching student data");
-      alert("An error occurred while fetching student data.");
+      alert("Student not found!");
     }
-  };  
+  };
 
   const handleMarksChange = (subject, e) => {
     setMarks({ ...marks, [subject]: e.target.value });
@@ -88,7 +86,6 @@ function TeachersPage({
     const total = Object.values(marks)
       .filter((mark) => mark !== "")
       .reduce((acc, curr) => acc + Number(curr), 0);
-
     return total;
   };
 
@@ -106,6 +103,11 @@ function TeachersPage({
   };
 
   const handleSave = async () => {
+    if (!searchedStudentName) {
+      alert("Please search for a student before saving marks.");
+      return;
+    }
+  
     try {
       const response = await fetch("http://127.0.0.1:5555/save_marks", {
         method: "POST",
@@ -113,108 +115,101 @@ function TeachersPage({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          student: studentName,
+          student: searchedStudentName,
           marks: marks,
           remarks: remarks,
         }),
       });
-      
+  
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        const errorMessage = await response.text();
+        throw new Error(`Network response was not ok: ${errorMessage}`);
       }
-      
+  
       const result = await response.json();
-      alert(result.message); // Assuming your server sends back a success message
-      // Reset form fields
+      alert(result.message);
+  
+      // Save the result with name, admissionNo, marks, remarks, and grade to localStorage
+      const totalMarks = calculateTotalMarks();
+      const grade = calculateGrade(totalMarks);
+      const newResult = {
+        name: searchedStudentName,
+        admissionNo: student,
+        marks: marks,
+        remarks: remarks,  // Include remarks here
+        grade: grade,
+      };
+  
+      const storedResults = JSON.parse(localStorage.getItem("studentResults")) || [];
+      storedResults.push(newResult);
+      localStorage.setItem("studentResults", JSON.stringify(storedResults));
+  
+      setSavedMarks({ ...marks });
+      setSavedRemarks({ ...remarks });
+  
       setStudent("");
       setMarks({});
       setRemarks({});
-      setSearchStatus("");
-  
-      // Redirect to Students page after saving marks
-      navigate("/students");
     } catch (error) {
       console.error("Error saving marks:", error);
-      alert("An error occurred while saving marks.");
+      alert("An error occurred while saving marks: " + error.message);
     }
   };
 
+  
+
   const totalMarks = calculateTotalMarks();
   const grade = calculateGrade(totalMarks);
+
+  const savedTotalMarks = Object.values(savedMarks)
+    .filter((mark) => mark !== "")
+    .reduce((acc, curr) => acc + Number(curr), 0);
+  const savedGrade = calculateGrade(savedTotalMarks);
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
   };
 
-  const handleStudentClick = () => {
-    alert(`Viewing profile for ${studentName}`);
-  };
-
-  const handleSubjectClick = (subject) => {
-    setEditSubject(subject);
-  };
-
-  // Function to update attendance status
-  const updateAttendance = (term, week, status, value) => {
-    setAttendance((prevAttendance) => ({
-      ...prevAttendance,
-      [term]: {
-        ...prevAttendance[term],
-        [week]: {
-          ...prevAttendance[term][week],
-          [status]: Number(value),
-        },
-      },
-    }));
-  };
-
-  // Logout handler
   const handleLogout = () => {
-    navigate("/"); // Redirect to home page
+    alert('Logged out!');
+    navigate("/"); 
   };
 
-  // Menu item click handlers
   const navigateTo = (path) => {
     navigate(path);
-    setMenuVisible(false); // Optionally close the menu after navigation
+    setMenuVisible(false); 
   };
 
   return (
     <div className="teachers-page">
-      {/* Notification Pop-up */}
-      {notification && <div className="notification-popup">{notification}</div>}
-
       <div className="sidebar1">
         <div className="menu-toggle" onClick={toggleMenu}>
-          {menuVisible ? <i class="bx bx-x"></i> : <i class="bx bx-menu"></i>}
+          {menuVisible ? <i className="bx bx-x"></i> : <i className="bx bx-menu"></i>}
         </div>
         {menuVisible && (
           <ul>
             <li onClick={() => navigateTo("/")}>Home</li>
-            <li onClick={() => navigateTo("/about")}>About</li>
-            <li onClick={() => navigateTo("/teachers")}>Teachers</li>
-            <li onClick={() => navigateTo("/students")}>
-              Students
-            </li>
-            <li onClick={() => navigateTo("/attendance-report")}>
-              Attendance-report
-            </li>
+            <li onClick={() => navigateTo("/classes")}>Classes</li>
+            <li onClick={() => navigateTo("/results")}>Results</li>
+            <li onClick={() => navigateTo("/students")}>Students</li>
+            <li onClick={() => navigateTo("/settings")}>Settings</li>
+            <li onClick={() => navigateTo("/dashboard")}>Dashboard</li>
+            <li onClick={() => navigateTo("/attendance-report")}>Attendance-report</li>
           </ul>
         )}
-
-        <div className="social-icons">
+        
+      </div>
+      <div className="social-icons">
          <i class='bx bxl-facebook-square' ></i>
          <i class='bx bxl-twitter'></i>
          <i class='bx bxl-linkedin-square' ></i>
         </div>
-      </div>
-
-      <div className="main-content">
+           <div className="main-content">
         <div className="header">
-          <h1>Welcome, {teacherName}</h1>
+          <h1>{teacherName}</h1>
           <div className="logout-container" onClick={handleLogout}>
             <span className="logout-text">Logout</span>
-            <i class="bx bx-log-out"></i>
+            <i className="bx bx-log-out"></i>
           </div>
         </div>
 
@@ -223,15 +218,14 @@ function TeachersPage({
             type="text"
             value={student}
             onChange={(e) => setStudent(e.target.value)}
-            placeholder="Enter student name:"
+            placeholder="Enter Admission Number:"
           />
           <button onClick={handleSearch}>Search</button>
         </div>
 
         {searchStatus === "Successful" && (
-  <div className="student-name"> {searchedStudentName}</div>
-)}
-
+          <div className="student-name"> {searchedStudentName}</div>
+        )}
 
         <h2>Select Class</h2>
         <select
@@ -277,67 +271,39 @@ function TeachersPage({
           </tbody>
         </table>
         <button onClick={handleSave}>Save</button>
-
         <div className="results-container">
           <div className="results">Total Marks: {totalMarks}</div>
           <div className="results">Grade: {grade}</div>
         </div>
 
-        <hr />
-        <h2 className="h2-attendance">ATTENDANCE</h2>
-        <h3 className="year">Select Year
-          <select
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
-          >
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </h3>
-        {Object.entries(attendance).map(([term, weeks]) => (
-          <div key={term} className="attendance-term">
-            <h3>{term}</h3>
-            {Object.entries(weeks).map(([week, { present, absent }]) => (
-              <div key={week} className="attendance-week">
-                <span>{week}:</span>
-                <input
-                  type="number"
-                  value={present}
-                  onChange={(e) =>
-                    updateAttendance(term, week, "present", e.target.value)
-                  }
-                  placeholder="Present"
-                />
-                <input
-                  type="number"
-                  value={absent}
-                  onChange={(e) =>
-                    updateAttendance(term, week, "absent", e.target.value)
-                  }
-                  placeholder="Absent"
-                />
-              </div>
-            ))}
-            {/* Total present and absent counts for each term */}
-            <div className="results">
-              Total Present:{" "}
-              {Object.values(weeks).reduce(
-                (acc, { present }) => acc + present,
-                0
-              )}
-            </div>
-            <div className="results">
-              Total Absent:{" "}
-              {Object.values(weeks).reduce(
-                (acc, { absent }) => acc + absent,
-                0
-              )}
+        {/* New Table to Display Saved Marks and Remarks */}
+        {Object.keys(savedMarks).length > 0 && (
+          <div className="saved-marks-container">
+            <h2 className="marks_grades_h2">Marks and grade for {searchedStudentName}</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Marks</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                {subjects.map((subject) => (
+                  <tr key={subject}>
+                    <td>{subject}</td>
+                    <td>{savedMarks[subject]}</td>
+                    <td>{savedRemarks[subject]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="results-container">
+              <div className="results1">Total Marks: {savedTotalMarks}</div>
+              <div className="results1">Grade: {savedGrade}</div>
             </div>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
