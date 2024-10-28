@@ -7,6 +7,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import MuiAlert from '@mui/material/Alert';
+import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete Icon
+
+const API_URL = 'http://127.0.0.1:5555/students';
 
 // Custom Alert for Snackbar
 const Alert = React.forwardRef((props, ref) => {
@@ -15,40 +18,53 @@ const Alert = React.forwardRef((props, ref) => {
 
 const Settings = () => {
   const [formData, setFormData] = useState({
-    id: 'S123456', // Non-editable field
-    admission_no: 'A123456', // Non-editable field
-    name: 'John Doe',
-    pin_no_hash: 'hashedpin1234',
-    DOB: '2005-01-01',
-    class_id: 'Grade 10',
-    address: '123 Main St, Springfield',
-    guardian_name: 'Jane Doe',
-    guardian_contact: '555-1234',
-    guardian_email: 'jane.doe@example.com',
+    id: '', admission_no: '', name: '', DOB: '', class_id: '', address: '',
+    guardian_name: '', guardian_contact: '', guardian_email: '', pin_no: '',
+    general_grade: ''
   });
 
   const [editing, setEditing] = useState({
-    personalInfo: false,
-    address: false,
-    guardianInfo: false,
+    personalInfo: false, address: false, guardianInfo: false,
   });
 
-  const [profilePic, setProfilePic] = useState(null); // Store profile picture
-  const [openSnackbar, setOpenSnackbar] = useState(false); // Snackbar state for feedback
+  const [profilePic, setProfilePic] = useState(localStorage.getItem('profilePic') || null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [removePicSnackbar, setRemovePicSnackbar] = useState(false); // Snackbar for removing picture
 
-  // Load saved profile info from localStorage on component mount
+  // Fetch student data from the backend on component mount
   useEffect(() => {
-    const savedProfilePic = localStorage.getItem('profilePic');
-    const savedFormData = JSON.parse(localStorage.getItem('formData'));
+    const fetchData = async () => {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
 
-    if (savedProfilePic) {
-      setProfilePic(savedProfilePic);
-    }
+        // Assuming API returns an array of students and we want the first one
+        const studentData = Array.isArray(data) ? data[0] : data;
+        
+        setFormData({
+          id: studentData.id || '', admission_no: studentData.admission_no || '', name: studentData.name || '', DOB: studentData.DOB || '',
+          class_id: studentData.class_id || '', address: studentData.address || '', guardian_name: studentData.guardian_name || '',
+          guardian_contact: studentData.guardian_contact || '', guardian_email: studentData.guardian_email || '',
+          pin_no: studentData.pin_no || '', general_grade: studentData.general_grade || ''
+        });
 
-    if (savedFormData) {
-      setFormData(savedFormData);
-    }
+        // Save to localStorage
+        localStorage.setItem('formData', JSON.stringify(studentData));
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
   }, []);
+
+  // Load data from localStorage if needed
+  useEffect(() => {
+    const localData = JSON.parse(localStorage.getItem('formData'));
+    if (localData && !formData.id) {
+      setFormData(localData);
+    }
+  }, [formData.id]);
 
   // Handle file upload for profile picture
   const handleProfilePicChange = (event) => {
@@ -56,12 +72,19 @@ const Settings = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setProfilePic(e.target.result); // Set base64 image as profilePic
-        localStorage.setItem('profilePic', e.target.result); // Save to localStorage
-        setOpenSnackbar(true); // Show success message
+        setProfilePic(e.target.result);
+        localStorage.setItem('profilePic', e.target.result);
+        setOpenSnackbar(true);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // Handle remove picture
+  const handleRemovePicture = () => {
+    setProfilePic(null);
+    localStorage.removeItem('profilePic');
+    setRemovePicSnackbar(true); // Show snackbar for removal
   };
 
   // Handle input changes
@@ -71,24 +94,26 @@ const Settings = () => {
   };
 
   // Handle save changes
-  const handleSave = (section) => {
-    setOpenSnackbar(true); // Show success snackbar
+  const handleSave = async (section) => {
     setEditing({ ...editing, [section]: false });
+    setOpenSnackbar(true);
 
-    // Save form data to localStorage
-    localStorage.setItem('formData', JSON.stringify(formData));
+    try {
+      await fetch(`${API_URL}/${formData.id}`, { // <-- wrapped in backticks
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      // Save updated form data to localStorage
+      localStorage.setItem('formData', JSON.stringify(formData));
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
   };
 
   // Handle cancel changes
   const handleCancel = (section) => {
     setEditing({ ...editing, [section]: false });
-  };
-
-  // Handle removing profile picture
-  const handleRemoveProfilePic = () => {
-    setProfilePic(null);
-    localStorage.removeItem('profilePic'); // Remove from localStorage
-    setOpenSnackbar(true); // Show success message
   };
 
   return (
@@ -111,24 +136,14 @@ const Settings = () => {
                   <PhotoCamera />
                 </IconButton>
               </label>
-
-              {/* Save and Remove Buttons for Profile Picture */}
-              {profilePic && (
-                <>
-                  <Button
-                    onClick={handleRemoveProfilePic}
-                    variant="outlined"
-                    color="secondary"
-                    style={{ marginTop: '1rem' }}
-                  >
-                    Remove Picture
-                  </Button>
-                </>
-              )}
+              <IconButton onClick={handleRemovePicture} color="secondary" aria-label="remove picture">
+                <DeleteIcon />
+              </IconButton>
             </Grid>
             <Grid item xs={12} sm={8}>
               <Typography variant="h5">{formData.name}</Typography>
-              <Typography variant="body1" color="textSecondary">{formData.guardian_email}</Typography>
+              <Typography variant="body1" color="textSecondary">Admission No: {formData.admission_no}</Typography>
+              <Typography variant="body1" color="textSecondary">Class ID: {formData.class_id}</Typography>
             </Grid>
           </Grid>
         </Paper>
@@ -140,48 +155,22 @@ const Settings = () => {
             <Divider style={{ marginBottom: '1rem' }} />
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Student ID"
-                  name="id"
-                  value={formData.id}
-                  fullWidth
-                  margin="normal"
-                  disabled // Non-editable
-                />
+                <TextField label="Student ID" name="id" value={formData.id} fullWidth margin="normal" disabled />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Admission Number"
-                  name="admission_no"
-                  value={formData.admission_no}
-                  fullWidth
-                  margin="normal"
-                  disabled // Non-editable
-                />
+                <TextField label="Admission Number" name="admission_no" value={formData.admission_no} fullWidth margin="normal" disabled />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Date of Birth"
-                  name="DOB"
-                  type="date"
-                  value={formData.DOB}
-                  onChange={handleInputChange}
-                  fullWidth
-                  disabled={!editing.personalInfo}
-                  margin="normal"
-                  InputLabelProps={{ shrink: true }}
-                />
+                <TextField label="Date of Birth" name="DOB" type="date" value={formData.DOB} onChange={handleInputChange} fullWidth disabled={!editing.personalInfo} margin="normal" InputLabelProps={{ shrink: true }} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Class ID"
-                  name="class_id"
-                  value={formData.class_id}
-                  onChange={handleInputChange}
-                  fullWidth
-                  disabled={!editing.personalInfo}
-                  margin="normal"
-                />
+                <TextField label="Class ID" name="class_id" value={formData.class_id} onChange={handleInputChange} fullWidth disabled={!editing.personalInfo} margin="normal" />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="General Grade" name="general_grade" value={formData.general_grade} onChange={handleInputChange} fullWidth disabled={!editing.personalInfo} margin="normal" />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="PIN Number" name="pin_no" value={formData.pin_no} onChange={handleInputChange} fullWidth disabled={!editing.personalInfo} margin="normal" />
               </Grid>
               <Grid item xs={12} sm={6}>
                 {!editing.personalInfo ? (
@@ -190,20 +179,10 @@ const Settings = () => {
                   </IconButton>
                 ) : (
                   <div>
-                    <Button
-                      onClick={() => handleSave('personalInfo')}
-                      startIcon={<SaveIcon />}
-                      variant="contained"
-                      color="primary"
-                    >
+                    <Button onClick={() => handleSave('personalInfo')} startIcon={<SaveIcon />} variant="contained" color="primary">
                       Save
                     </Button>
-                    <Button
-                      onClick={() => handleCancel('personalInfo')}
-                      startIcon={<CancelIcon />}
-                      variant="outlined"
-                      color="secondary"
-                    >
+                    <Button onClick={() => handleCancel('personalInfo')} startIcon={<CancelIcon />} variant="outlined" color="secondary">
                       Cancel
                     </Button>
                   </div>
@@ -218,86 +197,38 @@ const Settings = () => {
           <CardContent>
             <Typography variant="h6">Address</Typography>
             <Divider style={{ marginBottom: '1rem' }} />
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  label="Address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  fullWidth
-                  disabled={!editing.address}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                {!editing.address ? (
-                  <IconButton onClick={() => setEditing({ ...editing, address: true })}>
-                    <EditIcon />
-                  </IconButton>
-                ) : (
-                  <div>
-                    <Button
-                      onClick={() => handleSave('address')}
-                      startIcon={<SaveIcon />}
-                      variant="contained"
-                      color="primary"
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      onClick={() => handleCancel('address')}
-                      startIcon={<CancelIcon />}
-                      variant="outlined"
-                      color="secondary"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                )}
-              </Grid>
-            </Grid>
+            <TextField label="Address" name="address" value={formData.address} onChange={handleInputChange} fullWidth disabled={!editing.address} margin="normal" />
+            {!editing.address ? (
+              <IconButton onClick={() => setEditing({ ...editing, address: true })}>
+                <EditIcon />
+              </IconButton>
+            ) : (
+              <div>
+                <Button onClick={() => handleSave('address')} startIcon={<SaveIcon />} variant="contained" color="primary">
+                  Save
+                </Button>
+                <Button onClick={() => handleCancel('address')} startIcon={<CancelIcon />} variant="outlined" color="secondary">
+                  Cancel
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
 
         {/* Guardian Information Section */}
-        <Card elevation={3} style={{ marginBottom: '1.5rem' }}>
+        <Card elevation={3}>
           <CardContent>
             <Typography variant="h6">Guardian Information</Typography>
             <Divider style={{ marginBottom: '1rem' }} />
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Guardian Name"
-                  name="guardian_name"
-                  value={formData.guardian_name}
-                  onChange={handleInputChange}
-                  fullWidth
-                  disabled={!editing.guardianInfo}
-                  margin="normal"
-                />
+              <Grid item xs={12} sm={4}>
+                <TextField label="Guardian Name" name="guardian_name" value={formData.guardian_name} onChange={handleInputChange} fullWidth disabled={!editing.guardianInfo} margin="normal" />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Guardian Contact"
-                  name="guardian_contact"
-                  value={formData.guardian_contact}
-                  onChange={handleInputChange}
-                  fullWidth
-                  disabled={!editing.guardianInfo}
-                  margin="normal"
-                />
+              <Grid item xs={12} sm={4}>
+                <TextField label="Guardian Contact" name="guardian_contact" value={formData.guardian_contact} onChange={handleInputChange} fullWidth disabled={!editing.guardianInfo} margin="normal" />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Guardian Email"
-                  name="guardian_email"
-                  value={formData.guardian_email}
-                  onChange={handleInputChange}
-                  fullWidth
-                  disabled={!editing.guardianInfo}
-                  margin="normal"
-                />
+              <Grid item xs={12} sm={4}>
+                <TextField label="Guardian Email" name="guardian_email" value={formData.guardian_email} onChange={handleInputChange} fullWidth disabled={!editing.guardianInfo} margin="normal" />
               </Grid>
               <Grid item xs={12} sm={6}>
                 {!editing.guardianInfo ? (
@@ -306,20 +237,10 @@ const Settings = () => {
                   </IconButton>
                 ) : (
                   <div>
-                    <Button
-                      onClick={() => handleSave('guardianInfo')}
-                      startIcon={<SaveIcon />}
-                      variant="contained"
-                      color="primary"
-                    >
+                    <Button onClick={() => handleSave('guardianInfo')} startIcon={<SaveIcon />} variant="contained" color="primary">
                       Save
                     </Button>
-                    <Button
-                      onClick={() => handleCancel('guardianInfo')}
-                      startIcon={<CancelIcon />}
-                      variant="outlined"
-                      color="secondary"
-                    >
+                    <Button onClick={() => handleCancel('guardianInfo')} startIcon={<CancelIcon />} variant="outlined" color="secondary">
                       Cancel
                     </Button>
                   </div>
@@ -328,18 +249,19 @@ const Settings = () => {
             </Grid>
           </CardContent>
         </Card>
-
-        {/* Snackbar Notification */}
-        <Snackbar
-          open={openSnackbar}
-          autoHideDuration={6000}
-          onClose={() => setOpenSnackbar(false)}
-        >
-          <Alert onClose={() => setOpenSnackbar(false)} severity="success">
-            Changes saved successfully!
-          </Alert>
-        </Snackbar>
       </Grid>
+
+      {/* Snackbar Notifications */}
+      <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={() => setOpenSnackbar(false)}>
+        <Alert onClose={() => setOpenSnackbar(false)} severity="success">
+          Changes saved successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar open={removePicSnackbar} autoHideDuration={3000} onClose={() => setRemovePicSnackbar(false)}>
+        <Alert onClose={() => setRemovePicSnackbar(false)} severity="info">
+          Profile picture removed!
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 };

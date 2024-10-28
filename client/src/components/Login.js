@@ -36,7 +36,7 @@ function Login({ onLogin }) {
                     // Handle navigation for other roles
                     switch(role) {
                         case 'Student':
-                            navigate('/students');
+                            navigate('/student/dashboard');
                             break;
                         case 'Admin':
                             navigate('/admin/dashboard');

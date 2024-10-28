@@ -1,69 +1,79 @@
-// src/pages/Classes.js
 import React, { useState, useEffect } from 'react';
 import {
   Grid, Typography, TextField, Select, MenuItem, FormControl, InputLabel, Card, CardContent, CircularProgress, Button
 } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 import SearchIcon from '@mui/icons-material/Search';
 import SortIcon from '@mui/icons-material/Sort';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import LogoutIcon from '@mui/icons-material/Logout'; // Import the logout icon
-import './Classes.css'; // Custom CSS for styling
+import LogoutIcon from '@mui/icons-material/Logout';
+import './Classes.css';
 
 const Classes = () => {
   const [classesData, setClassesData] = useState([]);
+  const [teachersData, setTeachersData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterBy, setFilterBy] = useState('all');
   const [sortBy, setSortBy] = useState('name');
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  // Simulated API call for fetching classes data
+  // Fetching classes and teachers data from the backend
   useEffect(() => {
     const fetchClassesData = async () => {
-      setLoading(true);
-      setTimeout(() => {
-        setClassesData([
-          { id: 1, name: 'Mathematics', students: 30, teacher: 'Mr. Smith', schedule: 'Mon & Wed' },
-          { id: 2, name: 'Physics', students: 25, teacher: 'Mrs. Johnson', schedule: 'Tue & Thu' },
-          { id: 3, name: 'Chemistry', students: 20, teacher: 'Dr. Brown', schedule: 'Mon, Wed & Fri' },
-          { id: 4, name: 'Biology', students: 28, teacher: 'Ms. Green', schedule: 'Tue & Fri' },
-          { id: 5, name: 'History', students: 32, teacher: 'Dr. Grey', schedule: 'Mon & Thu' }
+      try {
+        const [classesResponse, teachersResponse] = await Promise.all([
+          fetch('http://127.0.0.1:5555/get_classes'),
+          fetch('http://127.0.0.1:5555/teachers')
         ]);
+        const classes = await classesResponse.json();
+        const teachers = await teachersResponse.json();
+        setClassesData(classes);
+        setTeachersData(teachers);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
         setLoading(false);
-      }, 1000);
+      }
     };
     fetchClassesData();
   }, []);
 
+  // Helper function to get teacher name by ID
+  const getTeacherName = (teacherId) => {
+    const teacher = teachersData.find((teacher) => teacher.id === teacherId);
+    return teacher ? teacher.name : 'Unknown';
+  };
+
   // Filter and sort classes based on user input
   const filteredClasses = classesData
     .filter((cls) =>
-      filterBy === 'all' ? true : cls.students >= (filterBy === 'high' ? 30 : 20)
+      filterBy === 'all' ? true : cls.class_capacity >= (filterBy === 'high' ? 30 : 20)
     )
     .filter((cls) =>
-      cls.name.toLowerCase().includes(searchQuery.toLowerCase())
+      cls.class_name.toLowerCase().includes(searchQuery.toLowerCase())
     )
-    .sort((a, b) => (sortBy === 'name' ? a.name.localeCompare(b.name) : b.students - a.students));
+    .sort((a, b) => (sortBy === 'name' ? a.class_name.localeCompare(b.class_name) : b.class_capacity - a.class_capacity));
 
-  // Logout handler (can be hooked to authentication logic)
+  // Logout handler
   const handleLogout = () => {
     alert('You have logged out!');
-    window.location.href = '/'; 
+    navigate('/');
   };
 
   return (
     <div className="classes-page">
-      {/* Logout Button with Icon and Text */}
       <Button
         color="inherit"
         onClick={handleLogout}
         style={{ position: 'absolute', top: '20px', right: '20px', fontSize: '1rem', textTransform: 'none' }}
-        startIcon={<LogoutIcon style={{ fontSize: '1.5rem' }} />} // Adding icon next to text
+        startIcon={<LogoutIcon style={{ fontSize: '1.5rem' }} />}
       >
         Logout
       </Button>
 
       <Typography variant="h3" align="center" gutterBottom>
-         Classes
+        Classes
       </Typography>
       <Typography variant="subtitle1" align="center" gutterBottom>
         Browse and manage your school’s classes.
@@ -123,10 +133,9 @@ const Classes = () => {
             <Grid item xs={12} sm={6} md={4} key={cls.id}>
               <Card className="class-card" elevation={4} sx={{ borderRadius: '12px' }}>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom>{cls.name}</Typography>
-                  <Typography variant="subtitle2" color="textSecondary">Teacher: {cls.teacher}</Typography>
-                  <Typography variant="subtitle2" color="textSecondary">Schedule: {cls.schedule}</Typography>
-                  <Typography variant="body1" gutterBottom>Students: {cls.students}</Typography>
+                  <Typography variant="h5" gutterBottom>{cls.class_name}</Typography>
+                  <Typography variant="subtitle2" color="textSecondary">Teacher: {getTeacherName(cls.teacher_id)}</Typography>
+                  <Typography variant="body1" gutterBottom>Students: {cls.class_capacity}</Typography>
                 </CardContent>
               </Card>
             </Grid>

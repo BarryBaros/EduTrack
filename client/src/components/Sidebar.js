@@ -13,7 +13,7 @@ const Sidebar = ({ isVisible }) => {
             <nav>
                 <ul>
                     <li className="mb-2 flex items-center">
-                        <img src={dashboardIcon} alt="Dashboard" className="mr-2 w-8 h-8" />
+                        
                         <NavLink to="/" className="block py-2 px-4 rounded hover:bg-blue-600" activeClassName="active-link">
                             Dashboard
                         </NavLink>
@@ -31,18 +31,18 @@ const Sidebar = ({ isVisible }) => {
                         </NavLink>
                     </li> */}
                     <li className="mb-2 flex items-center">
-                        <NavLink to="/students" className="nav-link block py-2 px-4 rounded hover:bg-blue-600" activeClassName="active-link">
+                        <NavLink to="/student/students" className="nav-link block py-2 px-4 rounded hover:bg-blue-600" activeClassName="active-link">
                             <FaUserGraduate /> Students
                         </NavLink>
                     </li>
                     <li className="mb-2 flex items-center">
-                        <NavLink to="/classes" className="nav-link block py-2 px-4 rounded hover:bg-blue-600" activeClassName="active-link">
+                        <NavLink to="/student/classes" className="nav-link block py-2 px-4 rounded hover:bg-blue-600" activeClassName="active-link">
                             <FaClipboardList /> Classes
                         </NavLink>
                     </li>
                     <li className="mb-2 flex items-center">
-                        <NavLink to="/settings" className="nav-link block py-2 px-4 rounded hover:bg-blue-600" activeClassName="active-link">
-                            <FaCogs /> Settings
+                        <NavLink to="/" className="nav-link block py-2 px-4 rounded hover:bg-blue-600" activeClassName="active-link">
+                            <FaCogs /> Logout
                         </NavLink>
                     </li>
                 </ul>
