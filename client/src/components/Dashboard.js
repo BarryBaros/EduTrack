@@ -12,10 +12,10 @@ const Dashboard = () => {
 
   // Sample student data (excluding profilePic)
   const studentData = {
-    name: 'John Doe',
-    class: '10A',
-    admissionNo: 'ADM001',
-    attendance: 95,
+    name: 'Tim Baros',
+    class: 'Form 1',
+    admissionNo: '123',
+    attendance: 90,
     grades: [
       { subject: 'Math', marks: 95, grade: 'A' },
       { subject: 'English', marks: 88, grade: 'B+' },

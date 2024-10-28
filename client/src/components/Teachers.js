@@ -50,7 +50,7 @@ function TeachersPage({
       }
 
       const response = await fetch(
-        "http://127.0.0.1:5555/students/admission_no/${student}"
+        `http://127.0.0.1:5555/students/admission_no/${student}`
       );
 
       if (!response.ok) {
@@ -192,7 +192,7 @@ function TeachersPage({
             <li onClick={() => navigateTo("/classes")}>Classes</li>
             <li onClick={() => navigateTo("/results")}>Results</li>
             <li onClick={() => navigateTo("/students")}>Students</li>
-            <li onClick={() => navigateTo("/settings")}>Settings</li>
+            <li onClick={() => navigateTo("/student/settings")}>Settings</li>
             <li onClick={() => navigateTo("/dashboard")}>Dashboard</li>
             <li onClick={() => navigateTo("/attendance-report")}>Attendance-report</li>
           </ul>

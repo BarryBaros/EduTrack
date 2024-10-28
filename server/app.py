@@ -165,9 +165,9 @@ def delete_student(id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-@app.route('/students/admission_number/<string:admission_number>', methods=['GET'])
-def get_student_by_admission_number(admission_number):
-    student = Student.query.filter_by(admission_number=admission_number).first()  # Assuming your Student model has an admission_number field
+@app.route('/students/admission_no/<string:admission_no>', methods=['GET'])
+def get_student_by_admission_number(admission_no):
+    student = Student.query.filter_by(admission_no=admission_no).first()  # Assuming your Student model has an admission_number field
     if student:
         return jsonify(student.to_dict()), 200
     else:

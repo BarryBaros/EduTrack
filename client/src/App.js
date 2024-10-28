@@ -14,6 +14,7 @@ import Dashboard from './components/Dashboard';
 import Students from './components/Students';
 import Classes from './components/Classes';
 import Settings from './components/Settings';
+import Results from './components/Results';
 import './App.css';
 
 const App = () => {
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/students-report" element={<StudentsReport />} />
         <Route path="/attendance-report" element={<AttendanceReport />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/results" element={<Results />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/add-teacher" element={<AddTeacher />} />
         <Route path="/admin/add-student" element={<AddStudent />} />
