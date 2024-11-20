@@ -107,6 +107,7 @@ function Login({ onLogin }) {
                     <input 
                         className="ictioner"
                         type="password" 
+                        placeholder="Enter Pin Number"
                         value={pinNumber}
                         onChange={(e) => setPinNumber(e.target.value)}
                         required 

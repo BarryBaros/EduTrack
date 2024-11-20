@@ -3,12 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { Grid, Card, CardContent, Typography, Avatar, CircularProgress, Box, Divider, List, ListItem, ListItemText } from '@mui/material';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { useNavigate } from "react-router-dom";
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
   const [profilePic, setProfilePic] = useState(localStorage.getItem('profilePic') || 'https://via.placeholder.com/150');
+  const navigate = useNavigate();
 
   // Sample student data (excluding profilePic)
   const studentData = {
@@ -57,9 +59,16 @@ const Dashboard = () => {
     };
   }, []);
 
+  const handleClick =  () => {
+    
+      navigate('/');
+  
+  }
+
   return (
     <div style={{ padding: '2rem', backgroundColor: '#f5f6fa' }}>
       {/* Dashboard Header */}
+      <div className='logout' onClick={handleClick} style={{ backgroundColor: '#313131', color: '#FFF', cursor: 'pointer', padding: '10px', margin: '1rem', textAlign: 'center', borderRadius: '10px', fontFamily: 'fantasy' }}>Logout</div>
       <Typography variant="h3" align="center" gutterBottom>
         Student Dashboard
       </Typography>

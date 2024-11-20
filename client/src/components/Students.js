@@ -51,7 +51,7 @@ const Students = () => {
   };
 
   const handleLogout = () => {
-    alert('You have logged out!');
+    
     navigate('/');
   };
 
@@ -82,28 +82,10 @@ const Students = () => {
               className="profile-pic"
             />
           </div>
-          <div className="student-info">
-            <h3>{searchedStudentName || 'Student Name'}</h3>
-            <p>Admission No: {admissionNumber || 'ADM001'}</p>
-            <p>Class: 10A</p>
-          </div>
+          
         </div>
 
-        <div className="input-fields">
-          <input
-            type="text"
-            placeholder="Enter Student Name"
-            value={searchedStudentName}
-            onChange={(e) => setSearchedStudentName(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Enter Admission Number"
-            value={admissionNumber}
-            onChange={(e) => setAdmissionNumber(e.target.value)}
-          />
-          <button onClick={handleSave}>Save</button>
-        </div>
+       
 
         <div className="grades-section">
           <div className="grades-card">

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "boxicons";
 
 function TeachersPage({
-  teacherName = "Mr John Kennedy",
+  teacherName = "Faith Kamau",
 }) {
   const [student, setStudent] = useState("");
   const [marks, setMarks] = useState({});
